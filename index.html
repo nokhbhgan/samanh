@@ -612,6 +612,14 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .soon-c .scd{margin:0;background:var(--c1);color:#fff;flex:0 0 auto;min-width:84px}
 .soon-c.hot{outline:0;border-color:var(--c1);background:var(--card)}
 .ang{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.ang .anp small{color:var(--muted)}
+.ach{margin:12px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card,#fff)}
+.acw{overflow-x:auto;padding-top:6px}.acg{width:max-content;min-width:100%;padding-inline-start:20px;position:relative}
+.acpl{position:relative}.acpl u{position:absolute;left:0;right:0;border-top:1px dashed var(--line);height:0;text-decoration:none;pointer-events:none}.acpl u s{position:absolute;inset-inline-start:-20px;top:-6px;font-size:9px;color:var(--muted);text-decoration:none}.acpl u.avg{border-top:1.5px dashed var(--navy,#12355D);opacity:.55}
+.acr{display:flex;gap:6px;align-items:flex-end}.acpl .acr{position:absolute;inset:0;align-items:flex-end}
+.acc,.acl{flex:0 0 38px;width:38px}.acc{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.acc i{display:block;width:22px;border-radius:4px 4px 0 0;background:var(--info)}.acc i.ok{background:var(--ok)}.acc i.warn{background:var(--warn)}.acc i.bad{background:var(--bad)}.acc i.tot{background:var(--navy,#12355D)}
+.acv{font-size:10px;line-height:1.2;margin-bottom:2px}
+.acn{align-items:flex-start;margin-top:4px}.acl{font-size:8.5px;line-height:1.25;text-align:center;overflow-wrap:anywhere;color:var(--muted);max-height:3.8em;overflow:hidden}.acl.tot{font-weight:700;color:inherit}
 </style>
 </head>
 <body>
@@ -986,7 +994,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.59';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.60';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -4209,6 +4217,20 @@ async function ptaForm(B, id, back) {          // ثبت سریع حضور وا�
 }
 /* ===================== تحلیل آزمون‌ها (مدیر، دبیر، دانش‌آموز) ===================== */
 const seg3 = (items, cur, fn, id) => { const e = seg2(items, cur, fn); e.classList.add('anseg'); if (id) e.id = id; return e; };
+/* نمودار ستونی میانگین دروس یک کلاس + میانگین کل (فونت ریز برای نام درس‌ها) */
+const anColChart = (cls, rows, studs) => {
+  const PH = 120, cs = rows.filter(c => c.avg != null).slice().sort((a, b) => b.avg - a.avg);
+  if (!cs.length) return '';
+  const sv = (studs || []).filter(s => s.cls === cls && s.avg != null).map(s => s.avg);
+  const tot = sv.length ? sv.reduce((t, x) => t + x, 0) / sv.length : cs.reduce((t, c) => t + c.avg, 0) / cs.length;
+  const col = (v, kind) => `<div class="acc"><div class="acv num">${nf(r2(v))}</div><i class="${kind}" style="height:${Math.max(2, Math.min(20, v) / 20 * PH)}px"></i></div>`;
+  const items = cs.map(c => [c.course, c.avg, anC(c.avg)]).concat([['میانگین کل', tot, 'tot']]);
+  return `<div class="ach"><div class="row" style="align-items:center"><b>${esc(cls)}</b><span class="grow"></span><span class="anp ${anC(tot)}" style="flex:0 0 auto;width:auto;display:inline-block">میانگین کل ${nf(r2(tot))}</span></div>
+    <div class="acw"><div class="acg">
+      <div class="acpl" style="height:${PH}px">${[0, 5, 10, 15, 20].map(v => `<u style="bottom:${v / 20 * PH}px"><s>${nf(v)}</s></u>`).join('')}<u class="avg" style="bottom:${Math.min(20, tot) / 20 * PH}px"></u>
+        <div class="acr">${items.map(([n, v, k]) => col(v, k)).join('')}</div></div>
+      <div class="acr acn">${items.map(([n, v, k]) => `<div class="acl ${k === 'tot' ? 'tot' : ''}">${esc(n)}</div>`).join('')}</div></div></div></div>`;
+};
 const anC = v => v == null ? '' : v >= 15 ? 'ok' : v >= 12 ? 'info' : v >= 10 ? 'warn' : 'bad';
 const anL = v => v == null ? '—' : v >= 17 ? 'عالی' : v >= 15 ? 'خوب' : v >= 12 ? 'متوسط' : v >= 10 ? 'ضعیف' : 'نیازمند اقدام';
 const anCp = p => p == null ? '' : p >= 60 ? 'ok' : p >= 45 ? 'info' : p >= 30 ? 'warn' : 'bad';
@@ -4373,9 +4395,7 @@ async function mAna(el) {
     } else if (mgr) {                                   // نمای کلی مدیر
       const clsL = uniq(D.cc.map(c => c.cls)).sort(byFa), crs = uniq(D.cc.map(c => c.course)).sort(byFa), probs = [];
       const good = D.cc.filter(c => c.n >= 4 && c.avg >= 15).sort((a, b) => b.avg - a.avg).slice(0, 5);
-      B.innerHTML = `<h3>نقشه‌ی میانگین کلاس‌ها و درس‌ها</h3><div class="scroll"><table class="tbl anheat"><thead><tr><th>کلاس</th>${crs.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${clsL.map(k => `<tr><th>${esc(k)}</th>${crs.map(c => { const x = cm[norm(k) + '|' + norm(c)]; return x ? `<td class="${anC(x.avg)}"><b class="num">${nf(x.avg)}</b></td>` : '<td class="muted">—</td>'; }).join('')}</tr>`).join('')}
-        <tr><th>میانگین درس</th>${crs.map(c => { const x = cAvg[norm(c)]; return `<td class="${anC(x.v)} tot"><b class="num">${nf(r2(x.v))}</b></td>`; }).join('')}</tr></tbody></table></div>
-        <p class="muted small">رنگ‌ها: سبز ≥ ۱۵، آبی ۱۲ تا ۱۵، نارنجی ۱۰ تا ۱۲، قرمز زیر ۱۰.</p>
+      B.innerHTML = `<h3>میانگین دروس هر کلاس</h3><p class="muted small">درس‌ها از بالاترین میانگین به پایین‌ترین آمده‌اند؛ ستون آخر (آبی تیره) میانگین کل دروس کلاس است. رنگ‌ها: سبز ≥ ۱۵، آبی ۱۲ تا ۱۵، نارنجی ۱۰ تا ۱۲، قرمز زیر ۱۰.</p>${clsL.map(k => anColChart(k, D.cc.filter(c => c.cls === k), D.students)).join('')}
         <h3 style="margin-top:14px">مهم‌ترین مشکل‌ها و پیشنهاد برای دبیران</h3><p class="muted small">درس‌هایی که مشکل مشابه دارند کنار هم آمده‌اند و پیشنهاد فقط یک‌بار نوشته شده است.</p>${anGroups(D.cc, true) || '<div class="empty">مشکل جدی دیده نشد.</div>'}
         ${good.length ? `<h3 style="margin-top:14px">نقاط قوت</h3>${good.map(c => `<div class="anc ok"><div class="anh"><b>${esc(c.course)}</b><span class="muted small">کلاس ${esc(c.cls)}${c.teacher ? ' · ' + esc(c.teacher) : ''}</span><span class="grow"></span><span class="anp ok">میانگین ${nf(c.avg)}</span></div></div>`).join('')}` : ''}`;
     } else {                                            // نمای کلی دبیر
@@ -5326,6 +5346,9 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.60', d:'۱۴۰۵/۰۸/۲۷', items:[
+    'تحلیل آزمون‌ها (نمای مدیر): جدول «نقشه‌ی میانگین کلاس‌ها و درس‌ها» برداشته شد و به‌جای آن برای هر کلاس یک نمودار ستونی کوچک آمده است: میانگین هر درس به ترتیب (از بالاترین) و ستون آخر میانگین کل دروس کلاس. نام درس‌ها با فونت ریز زیر محور افقی نوشته می‌شود.',
+  ] },
   { v:'v5.59', d:'۱۴۰۵/۰۸/۲۵', items:[
     'پرداخت شهریه: فونت و پهنای نوارهای لیست دانش‌آموزان کوچک‌تر و فشرده‌تر شد تا تعداد بیشتری در یک نگاه دیده شود.',
   ] },
@@ -5340,10 +5363,6 @@ const CHANGELOG = [
   { v:'v5.56', d:'۱۴۰۵/۰۸/۲۵', items:[
     'پرداخت شهریه: تب «لیست» به‌طور پیش‌فرض بر اساس تاریخ آخرین پرداخت (جدیدترین اول) مرتب می‌شود و دانش‌آموزان بدون پرداخت در پایین می‌آیند؛ با دکمه‌ی «ترتیب» می‌توان به ترتیب فهرست کلاس برگشت.',
     'پرداخت شهریه: در پنجره‌ی «ثبت پرداخت»، فهرست پرداخت‌های ثبت‌شده به ترتیب تاریخ پرداخت (جدیدترین اول) نمایش داده می‌شود.',
-  ] },
-  { v:'v5.55', d:'۱۴۰۵/۰۸/۲۵', items:[
-    'تحلیل آزمون‌ها: وقتی چند درس توصیه یا مشکل مشابه دارند، نام درس‌ها (و کلاس‌ها) یک‌جا نوشته می‌شود و توصیه فقط یک‌بار می‌آید؛ در تحلیل مدیر، دبیر، دانش‌آموز و آزمون‌های موسسه.',
-    'یکپارچگی ظاهری: رنگ و تم کل برنامه (صفحه‌ی ورود، سرصفحه، تب‌ها، دکمه‌ها، شمارنده‌ها و پس‌زمینه) هماهنگ با صفحه‌ی اصلی، آبی و سبز شد.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5635,7 +5654,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.59';
+const VERSION = 'v5.60';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
