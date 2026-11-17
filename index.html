@@ -173,7 +173,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .pmb{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--input);border:1px solid var(--line);margin:10px 0 8px;gap:1px}.pmb i{display:block;background:var(--line)}.pmb i.ok{background:var(--ok)}.pmb i.warn{background:var(--warn)}.pmb i.bad{background:var(--bad)}
 .pmn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.pmn button{border:1px solid var(--line);background:var(--input);color:var(--muted);border-radius:999px;padding:0 12px;min-height:36px;font:inherit;font-size:13px;cursor:pointer}.pmn button.ok{color:var(--ok);background:var(--ok-bg)}.pmn button.warn{color:var(--warn);background:var(--warn-bg)}.pmn button.bad{color:var(--bad);background:var(--bad-bg)}.pmn button.on{outline:2px solid var(--primary);font-weight:700}
 .pfr{flex-wrap:wrap}.p3{display:flex;gap:6px;flex:1 0 100%;margin-top:4px}.p3 button{flex:1 1 0;min-width:0;border:1px solid var(--line);background:var(--card);border-radius:10px;min-height:44px;padding:0 4px;font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}.p3 button.on.s{background:var(--ok-bg);color:var(--ok);border-color:var(--ok);font-weight:700}.p3 button.on.n{background:var(--bad-bg);color:var(--bad);border-color:var(--bad);font-weight:700}.p3 button.on.h{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);font-weight:700}
-.pfd{flex:1 0 100%;margin:2px 0 4px}.pfd select{width:100%}.pfsave{position:sticky;bottom:0;background:var(--card);padding:8px 0;border-top:1px solid var(--line)}
+.pfr{padding:4px 8px;gap:3px 8px;font-size:12px}.pfr .nm{font-size:12.5px}.pfr .i{font-size:11px}.pfr .btn.sm{font-size:11px;min-height:28px;padding:0 8px}.p3{flex:1 1 220px;margin-top:0;gap:4px}.p3 button{min-height:32px;font-size:11px;border-radius:8px;padding:0 2px}.pfr .pmn button{min-height:28px;font-size:11px;padding:0 9px}.pfr select{font-size:11.5px;min-height:30px;padding:2px 6px}
+.pfd{flex:1 0 100%;margin:0 0 2px}.pfd select{width:100%}.pfsave{position:sticky;bottom:0;background:var(--card);padding:8px 0;border-top:1px solid var(--line)}
 .pas{margin:12px 0}.pas h3{display:flex;gap:8px;align-items:center}.pas.bad h3{color:var(--bad)}.pas.warn h3{color:var(--warn)}.pas .pill.bad{background:var(--bad-bg);color:var(--bad)}.pas .pill.warn{background:var(--warn-bg);color:var(--warn)}
 .pab{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;background:var(--card)}.pas.bad .pab{border-inline-start:4px solid var(--bad)}.pas.warn .pab{border-inline-start:4px solid var(--warn)}.pah{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.pai{display:flex;flex-direction:column;gap:2px;margin-top:4px;font-size:13px}.pit i{color:var(--muted);font-style:normal}
 .anc{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--card);border-inline-start:5px solid var(--line)}.anc.ok{border-inline-start-color:var(--ok)}.anc.info{border-inline-start-color:var(--info)}.anc.warn{border-inline-start-color:var(--warn)}.anc.bad{border-inline-start-color:var(--bad)}
@@ -1000,7 +1001,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.61';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.62';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -2307,7 +2308,7 @@ async function viewManager() {
 /* ===== صفحه‌ی اول: نوارهای رنگی بخش‌ها با کاشی‌های افقی؛ نام و چیدمان نوارها در تنظیمات قابل تغییر است ===== */
 const HOME_COL = { blue:['#2b57a7', '#5ba8e6', 'آبی'], teal:['#0f8a7d', '#8fd5c6', 'سبز'], navy:['#12507f', '#6a96c8', 'سرمه‌ای'], purple:['#5b3ec2', '#ab98f0', 'بنفش'], rose:['#b4235f', '#f0a0c3', 'صورتی'], orange:['#c2410c', '#fbb98a', 'نارنجی'], green:['#2f7d32', '#9fd8a4', 'سبز روشن'], slate:['#334155', '#9fb0c6', 'خاکستری'] };
 const HOME_DEF = {
-  manager:[{ id:'exe', title:'خدمات اداری', color:'blue', items:['fee', 'lnk', 'sms', 'set', 'ver', 'ban', 'tch', 'stu', 'alg', 'stf'] }, { id:'edu', title:'خدمات آموزشی', color:'teal', items:['att', 'evl', 'jam', 'exm', 'ana'] }, { id:'pro', title:'پرورشی و مشاوره', color:'navy', items:['dsc', 'cns', 'pta'] }],
+  manager:[{ id:'exe', title:'خدمات اداری', color:'blue', items:['fee', 'lnk', 'sms', 'set', 'hcf', 'dlo', 'ver', 'ban', 'tch', 'stu', 'alg', 'stf'] }, { id:'edu', title:'خدمات آموزشی', color:'teal', items:['day', 'att', 'evl', 'jam', 'exm', 'ana'] }, { id:'pro', title:'پرورشی و مشاوره', color:'navy', items:['dsc', 'cns', 'pta'] }],
   teacher:[{ id:'tcls', title:'امور کلاس', color:'blue', items:['att', 'gr', 'fac', 'exm'] }, { id:'tana', title:'آزمون‌ها و تحلیل', color:'teal', items:['jam', 'ana', 'rpt'] }, { id:'tacc', title:'حساب و ابزار', color:'slate', items:['off', 'pw'] }],
   student:[{ id:'sedu', title:'اطلاعات تحصیلی', color:'blue', items:['ntf', 'att', 'gr', 'card', 'rank', 'ana'] }, { id:'sexm', title:'آزمون و برنامه‌ریزی', color:'teal', items:['jam', 'exm', 'plan'] }, { id:'ssrv', title:'خدمات', color:'navy', items:['fee', 'csi', 'fac'] }, { id:'sacc', title:'حساب کاربری', color:'slate', items:['off', 'pw'] }],
   counselor:[{ id:'cmain', title:'خدمات مشاوره', color:'teal', items:['ses', 'rpt', 'inf', 'ins', 'fil'] }, { id:'cacc', title:'حساب و ابزار', color:'slate', items:['off', 'pw'] }]
@@ -2320,7 +2321,7 @@ const HOME_KEYS = {                              // همه‌ی ماژول‌ه�
 };
 const HOME_ROLE_FA = [['manager', 'مدیر'], ['teacher', 'دبیر'], ['student', 'دانش‌آموز'], ['counselor', 'مشاور']];
 const HOME_SUB = {
-  manager:{ fee:'شهریه و پرداخت‌ها', lnk:'سایت‌ها و پیوندهای سریع', sms:'پیام به اولیا', set:'کلاس، دروس و برنامه', ver:'تازه‌های برنامه', ban:'پیام و عکس مناسبتی', tch:'دبیران و ابلاغ', stu:'اطلاعات و وضعیت', alg:'ورود و فعالیت کاربران', stf:'حضور کارکنان', att:'غیبت و تأخیر', evl:'نمره، کارنامه و رتبه', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', ana:'نقاط ضعف و قوت', dsc:'موارد انضباطی', cns:'جلسات مشاوره', pta:'جلسات و والدین غایب' },
+  manager:{ day:'وضعیت ثبت حضور زنگ‌ها', hcf:'نوارها و چیدمان', dlo:'فایل بدون اینترنت', fee:'شهریه و پرداخت‌ها', lnk:'سایت‌ها و پیوندهای سریع', sms:'پیام به اولیا', set:'کلاس، دروس و برنامه', ver:'تازه‌های برنامه', ban:'پیام و عکس مناسبتی', tch:'دبیران و ابلاغ', stu:'اطلاعات و وضعیت', alg:'ورود و فعالیت کاربران', stf:'حضور کارکنان', att:'غیبت و تأخیر', evl:'نمره، کارنامه و رتبه', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', ana:'نقاط ضعف و قوت', dsc:'موارد انضباطی', cns:'جلسات مشاوره', pta:'جلسات و والدین غایب' },
   teacher:{ att:'غیبت و تأخیر کلاس', gr:'ثبت و ویرایش', fac:'فعالیت‌های کلاسی', exm:'برنامه‌ی امتحانات', jam:'نتایج آزمون‌ها', ana:'نقاط ضعف و قوت', rpt:'گزارش کلاس‌ها', off:'بدون اینترنت', pw:'رمز ورود' },
   student:{ ntf:'پیام‌های مدرسه', att:'غیبت و تأخیر', gr:'نمره‌ی درس‌ها', card:'کارنامه‌ی من', rank:'رتبه در کلاس', ana:'نقاط ضعف و قوت', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', plan:'برنامه‌ی هفتگی', fee:'شهریه و پرداخت‌ها', csi:'از مشاور', fac:'فعالیت‌های کلاسی', off:'بدون اینترنت', pw:'رمز ورود' },
   counselor:{ ses:'ثبت جلسه', rpt:'سوابق جلسات', inf:'اطلاعات دانش‌آموز', ins:'نتایج آزمون‌ها', fil:'پرونده', off:'بدون اینترنت', pw:'رمز ورود' }
@@ -2347,9 +2348,10 @@ function tileHome(el, title, sub, tiles, go, role, st) {
   el.onclick = e => { if (e.target.closest('#offGo')) { e.preventDefault(); return go('off'); } const b = e.target.closest('.tile'); if (b) go(b.dataset.k); };
   bannerLoad(el);
 }
-const SECTS = [['exe', 'اجرایی', ['fee', 'lnk', 'sms', 'set', 'ver', 'ban', 'tch', 'stu', 'alg', 'stf']], ['edu', 'آموزشی', ['att', 'evl', 'jam', 'exm', 'ana']], ['pro', 'پرورشی', ['dsc', 'cns', 'pta']]];
+const SECTS = [['exe', 'اجرایی', ['fee', 'lnk', 'sms', 'set', 'hcf', 'dlo', 'ver', 'ban', 'tch', 'stu', 'alg', 'stf']], ['edu', 'آموزشی', ['day', 'att', 'evl', 'jam', 'exm', 'ana']], ['pro', 'پرورشی', ['dsc', 'cns', 'pta']]];
 const MODS = {                                   // کلید: [عنوان، آیکن، رنگ، تابع نمایش]
   ana:['تحلیل آزمون‌ها', 'ana', '#22d3ee,#0891b2', el => mAna(el)],
+  day:['برنامه روز جاری', 'exm', '#60a5fa,#2563eb', el => mDay(el)], hcf:['تنظیمات صفحه اصلی', 'plan', '#94a3b8,#475569', el => mHomeCfg(el)], dlo:['دانلود نسخه آفلاین', 'off', '#2dd4bf,#0d9488', el => mOffline(el)],
   pta:['جلسات با والدین', 'pta', '#818cf8,#4338ca', el => mPta(el)], sms:['پیامک اولیا', 'sms', '#2dd4bf,#0f766e', el => mSms(el)],
   fee:['پرداخت شهریه', 'fee', '#34d399,#059669', el => mFee(el)],
   set:['تنظیمات', 'set', '#a1a1aa,#52525b', el => mSetGrp(el)], tch:['دبیران', 'tch', '#4ade80,#15803d', el => mTeachers(el)],
@@ -2369,7 +2371,7 @@ function linkKeys() {                            // هر پیوند یک ماژ�
   return ks;
 }
 function tileOrder(sect) {                       // ترتیب کاشی‌ها برای هر کاربر (روی سرور، با حساب خودش)
-  const saved = (M && M.tord && M.tord[sect[0]]) || [], base = sect[2].filter(k => !(OFF && k === 'off'));
+  const saved = (M && M.tord && M.tord[sect[0]]) || [], base = sect[2].filter(k => !(OFF && (k === 'off' || k === 'dlo' || k === 'hcf')));
   return base.sort((a, b) => { const i = saved.indexOf(a), j = saved.indexOf(b); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j); });
 }
 const CNT_NEW = { exm:1, dsc:1, cns:1, att:1 };   // شمارنده‌ی «جدید» (از آخرین بازشدن)
@@ -2434,11 +2436,11 @@ function tilesDnD(box, onDone) {                 // جابه‌جایی با ک�
   box.addEventListener('dragstart', e => e.preventDefault());
 }
 function mTiles(el) {
-  const avail = SECTS.reduce((a, s) => a.concat(s[2]), []).filter(k => !(OFF && k === 'off')).concat(linkKeys());
+  const avail = SECTS.reduce((a, s) => a.concat(s[2]), []).filter(k => !(OFF && (k === 'off' || k === 'dlo' || k === 'hcf'))).concat(linkKeys());
   const secs = homeSecs('manager', M.settings, avail).map(s => { const saved = (M && M.tord && M.tord[s.id]) || []; if (saved.length) s.items = s.items.slice().sort((a, b) => { const i = saved.indexOf(a), j = saved.indexOf(b); return (i < 0 ? 999 : i) - (j < 0 ? 999 : j); }); return s; });
   el.innerHTML = `<div class="hero"><div class="hero-img"></div><div class="hero-t"><h2>${esc((M.settings && M.settings.school) || S.school || '')}</h2><div class="muted">سال تحصیلی ${esc(ayLabel(M.settings))}</div></div></div>${bannerBox()}
     <div class="hsecs">${homeHtml(secs, k => { const m = MODS[k]; return homeCard(k, m[0], m[1], m.url ? 'پیوند' : HOME_SUB.manager[k] || '', cntBadge(k)); })}</div>
-    <p class="muted small" style="text-align:center;margin-top:12px">برای تغییر ترتیب، هر ماژول را بکشید و در همان نوار رها کنید (در موبایل لحظه‌ای نگه دارید و بکشید). نام و چیدمان نوارها در «تنظیمات ← صفحه‌ی اصلی» تغییر می‌کند.</p>
+    <p class="muted small" style="text-align:center;margin-top:12px">برای تغییر ترتیب، هر ماژول را بکشید و در همان نوار رها کنید (در موبایل لحظه‌ای نگه دارید و بکشید). نام و چیدمان نوارها در «تنظیمات صفحه اصلی» تغییر می‌کند.</p>
     <div style="text-align:center;margin-top:6px"><button class="btn sm" type="button" id="tReset">بازنشانی ترتیب</button></div>`;
   bannerLoad(el);
   $$('.hgrid', el).forEach(box => tilesDnD(box, o => { M.tord = Object.assign({}, M.tord, { [box.dataset.sec]:o }); api('tordSave', { sect:box.dataset.sec, order:o }).catch(() => {}); }));
@@ -2450,7 +2452,8 @@ function mTiles(el) {
   };
 }
 function goTab(k) {                              // رفتن به یک ماژول از داخل ماژول دیگر
-  if (['cls', 'sch', 'org', 'off'].indexOf(k) >= 0) { MSUB.set = k; k = 'set'; }
+  if (k === 'off') k = 'dlo'; else if (k === 'home') k = 'hcf';
+  if (['cls', 'sch', 'org'].indexOf(k) >= 0) { MSUB.set = k; k = 'set'; }
   if (['mgr', 'cnl', 'brand'].indexOf(k) >= 0) { MSUB.set = 'set'; k = 'set'; }   // این بخش‌ها زیرمجموعه‌ی تنظیمات هستند
   if (!MODS[k]) return;
   MT.mod = k; mShow();
@@ -2540,7 +2543,7 @@ async function rAttRange(el) {
   load();
 }
 const MR = { sub:'day', date:'', month:'', grade:'', cls:'', course:'', code:'', from:'', to:'', card:{} };
-const MSUB = { alg:'tch', att:'live', rep:'gr', dsc:'add', set:'set', jam:'rm', cns:'rpt' };
+const MSUB = { alg:'tch', att:'abs', rep:'gr', dsc:'add', set:'set', jam:'rm', cns:'rpt' };
 function mGroup(el, key, subs) {           // زبانه‌ی اصلی با چند زیرمجموعه
   el.innerHTML = '<div class="sg"></div><div id="rb"></div>';
   const need = { rng:1, gr:1, card:1, abs:1 };
@@ -2555,7 +2558,7 @@ function mGroup(el, key, subs) {           // زبانه‌ی اصلی با چن
   $('.sg', el).replaceWith(seg2(subs.map(s => [s[0], s[1]]), MSUB[key], show));
   show(MSUB[key]);
 }
-const mAttGrp = el => mGroup(el, 'att', [['live', 'وضعیت', mLive], ['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]);
+const mAttGrp = el => mGroup(el, 'att', [['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]);
 const mDiscGrp = el => mGroup(el, 'dsc', [['add', 'ثبت و سوابق انضباط', mDisc], ['apl', 'درخواست‌های حذف نمره', mDap], ['drp', 'نمره‌ی انضباط دانش‌آموزان', mDiscRpt], ['cfg', 'تنظیم نمره‌های منفی', mDscCfg]]);
 function mHomeCfg(el) {                          // تنظیمات ← صفحه‌ی اصلی: نام نوارها، رنگ، جای هر ماژول و ترتیب برای هر نقش
   let role = 'manager', cfg = null;
@@ -2568,7 +2571,7 @@ function mHomeCfg(el) {                          // تنظیمات ← صفحه�
   };
   const sw = (a, b, i) => { if (b < 0 || b >= a.length) return; const t = a[i]; a[i] = a[b]; a[b] = t; };
   const paint = () => {
-    el.innerHTML = `<h3>صفحه‌ی اول برنامه</h3><p class="muted small">برای هر نقش مشخص کنید صفحه‌ی اول چند نوار داشته باشد، روی هر نوار چه نوشته شود و هر ماژول زیر کدام نوار بیاید. تغییرات پس از «ذخیره» در ورود بعدی همان نقش دیده می‌شود. ماژول‌هایی که جایی نداشته باشند (مثل پیوند تازه) در آخرین نوار می‌آیند.</p><div id="hcR"></div><div id="hcL"></div>
+    el.innerHTML = `<h3>تنظیمات صفحه اصلی</h3><p class="muted small">برای هر نقش مشخص کنید صفحه‌ی اول چند نوار داشته باشد، روی هر نوار چه نوشته شود و هر ماژول زیر کدام نوار بیاید. تغییرات پس از «ذخیره» در ورود بعدی همان نقش دیده می‌شود. ماژول‌هایی که جایی نداشته باشند (مثل پیوند تازه) در آخرین نوار می‌آیند.</p><div id="hcR"></div><div id="hcL"></div>
       <div class="savebar"><button class="btn sm" id="hcAdd" type="button">＋ افزودن نوار</button><span class="grow"></span><button class="btn sm" id="hcRs" type="button">بازگشت به پیش‌فرض</button><button class="btn primary" id="hcSv" type="button">ذخیره</button></div>`;
     $('#hcR').replaceWith(Object.assign(seg3(HOME_ROLE_FA, role, k => { role = k; build(); paint(); }), { id:'hcR' }));
     $('#hcL').innerHTML = cfg.map((s, i) => { const c = HOME_COL[s.color] || HOME_COL.blue;
@@ -2599,7 +2602,7 @@ function mHomeCfg(el) {                          // تنظیمات ← صفحه�
     } catch (err) { fail(err); }
   };
 }
-const mSetGrp = el => mGroup(el, 'set', [['set', 'تنظیمات عمومی', mSettings], ['home', 'صفحه‌ی اصلی', mHomeCfg], ['cls', 'تعریف کلاس', mClasses], ['sch', 'برنامه هفتگی', mSchedule], ['org', 'چارت مدرسه', mManagers], ['coef', 'تعریف دروس', mCoef], ...(OFF ? [] : [['off', 'نسخه‌ی آفلاین', mOffline], ['bkp', 'حجم داده‌ها', mBackup], ['roll', 'ارتقای سال', mRoll]])]);
+const mSetGrp = el => mGroup(el, 'set', [['set', 'تنظیمات عمومی', mSettings], ['cls', 'تعریف کلاس', mClasses], ['sch', 'برنامه هفتگی', mSchedule], ['org', 'چارت مدرسه', mManagers], ['coef', 'تعریف دروس', mCoef], ...(OFF ? [] : [['bkp', 'حجم داده‌ها', mBackup], ['roll', 'ارتقای سال', mRoll]])]);
 async function mDiscRpt(el) {
   el.innerHTML = `<h2>گزارش انضباط</h2><div class="filters"><label class="f">کلاس<select id="drC">${classOpts('', 'همه‌ی کلاس‌ها')}</select></label></div><div id="rOut">${loadingHtml}</div>`;
   const load = async () => {
@@ -3360,13 +3363,15 @@ async function mDisc(el) {
 /* --- وضعیت لحظه‌ای حضور و غیاب (فقط مدیر) --- */
 let LV_TIMER = null;
 let LV_DATE = '';
-async function mLive(el) {
+async function mDay(el) {
   clearInterval(LV_TIMER);
-  if (!LV_DATE) LV_DATE = todayJ();
-  el.innerHTML = `<h2>وضعیت</h2>
-    <div class="filters"><div id="lvDate"></div></div>
+  LV_DATE = todayJ();
+  el.innerHTML = `<h2>برنامه روز جاری</h2>
+    <div class="filters"><div id="lvDate"></div><div class="row" style="gap:6px"><button class="btn sm" type="button" id="lvPrev">▶ روز قبل</button><button class="btn sm" type="button" id="lvNext">روز بعد ◀</button></div></div>
     <div id="lvOut">${loadingHtml}</div>`;
-  const bar = () => calBar($('#lvDate'), LV_DATE, v => { LV_DATE = v > todayJ() ? todayJ() : v; clearInterval(LV_TIMER); go(); }, true);
+  const bar = () => calBar($('#lvDate'), LV_DATE, v => { LV_DATE = v; clearInterval(LV_TIMER); go(); });
+  const step = n => { LV_DATE = jAdd(LV_DATE, n); bar(); clearInterval(LV_TIMER); go(); };
+  $('#lvPrev').onclick = () => step(-1); $('#lvNext').onclick = () => step(1);
   const load = async () => {
     if (!$('#lvOut')) { clearInterval(LV_TIMER); return; }
     let d;
@@ -3379,7 +3384,7 @@ async function mLive(el) {
       return xs.length ? xs.map(x => `<div class="lvc ${x.state}"><b>${esc(x.course)}</b><span>${esc(x.teacherName)}</span><small>${x.start ? esc(x.start) + ' تا ' + esc(x.end) : ''}</small>${x.state === 'late' ? `<button class="btn sm" type="button" data-lv="${d.items.indexOf(x)}">ثبت به‌جای دبیر</button>` : ''}</div>`).join('') : '<span class="muted small">—</span>';
     };
     const ps = Array.from({ length:d.periods }, (_, i) => i + 1);
-    $('#lvOut').innerHTML = `<p class="muted small">${esc(d.day)} ${esc(d.date)}${d.isToday ? ' · ساعت ' + esc(d.now) + ' · به‌روزرسانی خودکار هر یک دقیقه' : ' · روز گذشته'} · هفته‌ی ${esc(d.parity)}</p>
+    $('#lvOut').innerHTML = `<p class="muted small">${esc(d.day)} ${esc(d.date)}${d.isToday ? ' · ساعت ' + esc(d.now) + ' · به‌روزرسانی خودکار هر یک دقیقه' : d.isFuture ? ' · روز آینده (برنامه‌ی هفتگی)' : ' · روز گذشته'} · هفته‌ی ${esc(d.parity)}</p>
       ${kpis([[cnt('done'), 'انجام شده', 'ok'], [cnt('late'), d.isToday ? 'انجام‌نشده (دیرکرد)' : 'ثبت‌نشده', cnt('late') ? 'bad' : 'ok'], [cnt('wait'), 'در انتظار']])}
       <div class="scroll" style="margin-top:12px"><table class="tbl lvt"><thead><tr><th>کلاس</th>${ps.map(p => `<th>زنگ ${nf(p)}</th>`).join('')}</tr></thead><tbody>
       ${cls.map(c => `<tr><td><b>${esc(c)}</b></td>${ps.map(p => `<td>${cell(c, p)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -5365,6 +5370,11 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.62', d:'۱۴۰۵/۰۸/۲۷', items:[
+    'جلسات با والدین: فونت و ارتفاع ردیف‌های ثبت حضور کوچک‌تر شد؛ در صفحه‌های عریض دکمه‌های حضور هم‌ردیف نام قرار می‌گیرند.',
+    'حضور و غیاب: تب «وضعیت» برداشته شد و به ماژول مستقل «برنامه روز جاری» (در بخش آموزشی) تبدیل شد؛ علاوه بر امروز، با دکمه‌های «روز قبل / روز بعد» یا تقویم می‌توان برنامه‌ی روزهای آینده را دید.',
+    'تنظیمات: تب «صفحه‌ی اصلی» به ماژول مستقل «تنظیمات صفحه اصلی» و تب «نسخه‌ی آفلاین» به ماژول مستقل «دانلود نسخه آفلاین» تبدیل شد (در بخش اجرایی). اگر چیدمان سفارشی ذخیره کرده‌اید، ماژول‌های تازه در آخرین نوار می‌آیند و می‌توانید جایشان را در تنظیمات صفحه اصلی تغییر دهید.',
+  ] },
   { v:'v5.61', d:'۱۴۰۵/۰۸/۲۶', items:[
     'تحلیل آزمون‌ها: نمودار جدید «پراکندگی نمرات در هر درس» برای هر کلاس (مدیر) و هر کلاس دبیر: هر ردیف یک درس با نوار چهاررنگ که طولش تعداد دانش‌آموزان است — سبز ۱۷ تا ۲۰، آبی ۱۵ تا ۱۷، نارنجی ۱۰ تا ۱۵ و قرمز ۰ تا ۱۰. درس‌های بهتر بالاتر می‌آیند.',
   ] },
@@ -5377,10 +5387,6 @@ const CHANGELOG = [
   { v:'v5.58', d:'۱۴۰۵/۰۸/۲۵', items:[
     'پرداخت شهریه: ترتیب لیست و پرداخت‌های ثبت‌شده بر اساس تاریخ پرداخت از قدیم به جدید (زودترین بالا) است و دانش‌آموزانِ بدون پرداخت در انتها می‌آیند.',
     'رفع نمایش ناقص تقویم در پنجره‌ی ویرایش پرداخت (و سایر پنجره‌های کوچک): تقویم حالا کامل و داخل صفحه باز می‌شود.',
-  ] },
-  { v:'v5.57', d:'۱۴۰۵/۰۸/۲۵', items:[
-    'پرداخت شهریه: تب «ترتیب» حذف شد؛ لیست فقط به‌صورت فهرست کلاس است ولی نام‌ها همیشه بر اساس تاریخ آخرین پرداخت مرتب می‌شوند (جدیدترین اول).',
-    'پرداخت شهریه: همه‌ی پرداخت‌های ثبت‌شده قابل ویرایش شدند (مبلغ، تاریخ و توضیح) از پنجره‌ی «ثبت پرداخت» ← دکمه‌ی «ویرایش».',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5427,7 +5433,7 @@ async function mChanges(el) {
     ${CHANGELOG.slice(0, 5).map(c => `<div class="card" style="box-shadow:none;margin:10px 0"><h3 style="margin:0 0 6px"><span class="code">${esc(c.v)}</span>${c.d ? ` <small class="muted">· ${esc(c.d)}</small>` : ''}${c.v === BUILD ? ' <span class="pill ok">نسخه‌ی فعلی</span>' : ''}</h3><ul style="margin:0;padding-inline-start:20px;line-height:1.9">${c.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}`;
 }
 async function mOffline(el) {
-  el.innerHTML = `<h2>نسخه‌ی آفلاین</h2>
+  el.innerHTML = `<h2>دانلود نسخه آفلاین</h2>
     <p class="muted small">یک فایل واحد (HTML) ساخته می‌شود که <b>کل اطلاعات مدرسه</b> (همه‌ی برگه‌های شیت) را همراه خودش دارد و بدون اینترنت روی رایانه یا موبایل باز می‌شود. همه‌ی بخش‌های مدیر (گزارش‌ها، کارنامه، رتبه‌ها، انضباط، آزمون‌ها و …) و «مشاهده‌ی پنل» دانش‌آموز و دبیر با همان داده‌ها کار می‌کند.</p>
     <ul class="small muted" style="line-height:2"><li>فایل <b>فقط‌خواندنی</b> است؛ ثبت و ویرایش فقط در نسخه‌ی آنلاین ممکن است.</li><li>داده‌ها در لحظه‌ی ساخت ثبت می‌شوند؛ برای به‌روز شدن باید دوباره بسازید.</li><li>رمز ورود کاربران و کلید پیامک در فایل نمی‌آید. عکس رسیدها که در Drive هستند هم همراه نیست.</li></ul>
     <p class="note warn"><b>حفاظت:</b> این فایل اطلاعات شخصی دانش‌آموزان را دارد. حتماً برایش رمز بگذارید (بدون رمز، هر کس فایل را داشته باشد همه‌چیز را می‌بیند) و آن را فقط روی دستگاه امن نگه دارید.</p>
@@ -5672,7 +5678,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.61';
+const VERSION = 'v5.62';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
@@ -8114,8 +8120,8 @@ const termNames_ = () => settings_().terms.map(t => t.name);
 function liveStatus_(u, p) {
   const st = settings_(), today = todayJ_(), now = nowHM_(), tn = teacherNames_();
   const date = normDate_(p && p.date) || today;
-  if (!dateOk_(date)) return err_(BAD_DATE);
-  const isToday = date === today, di = dayIdx_(date), par = parity_(date);
+  if (!dateFmtOk_(date)) return err_(BAD_DATE);            // روزهای آینده هم مجازند (فقط نمایش برنامه)
+  const isToday = date === today, isFuture = date > today, di = dayIdx_(date), par = parity_(date);
   const done = {};
   rows_('ses').forEach(x => { if (str_(x[0]) === date) done[norm_(x[1]) + '|' + norm_(x[2])] = true; });
   const cls = classes_().slice().sort((a, b) => a.name.localeCompare(b.name, 'fa'));
@@ -8123,11 +8129,11 @@ function liveStatus_(u, p) {
   if (di <= 5) schedule_().forEach(s => {
     if (s.day !== DAYS[di] || !active_(s.week, par)) return;
     const c = classOf_(s.cls), b = (st.bells[shiftAt_(c ? c.shift : '', par)] || [])[s.period - 1] || ['', ''];
-    const d = !!done[norm_(s.cls) + '|' + norm_(s.course)];
-    const started = !isToday || (!!b[0] && b[0] <= now);      // روز گذشته: همه‌ی زنگ‌ها شروع شده‌اند
+    const d = !isFuture && !!done[norm_(s.cls) + '|' + norm_(s.course)];
+    const started = isFuture ? false : (!isToday || (!!b[0] && b[0] <= now));      // روز گذشته: همه‌ی زنگ‌ها شروع شده‌اند
     items.push({ cls:s.cls, period:s.period, course:s.course, teacher:s.teacher, teacherName:tn[s.teacher] || s.teacher, start:b[0] || '', end:b[1] || '', state:d ? 'done' : (started ? 'late' : 'wait') });
   });
-  return { status:'ok', date, today, isToday, now, day:di <= 5 ? DAYS[di] : 'جمعه', parity:par, periods:st.periods, classes:cls.map(c => c.name), items };
+  return { status:'ok', date, today, isToday, isFuture, now, day:di <= 5 ? DAYS[di] : 'جمعه', parity:par, periods:st.periods, classes:cls.map(c => c.name), items };
 }
 /* ---------- تقویم آزمون‌ها ---------- */
 const EXM_KINDS = ['class', 'jam', 'term'];
