@@ -620,6 +620,12 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .acc i{display:block;width:22px;border-radius:4px 4px 0 0;background:var(--info)}.acc i.ok{background:var(--ok)}.acc i.warn{background:var(--warn)}.acc i.bad{background:var(--bad)}.acc i.tot{background:var(--navy,#12355D)}
 .acv{font-size:10px;line-height:1.2;margin-bottom:2px}
 .acn{align-items:flex-start;margin-top:4px}.acl{font-size:8.5px;line-height:1.25;text-align:center;overflow-wrap:anywhere;color:var(--muted);max-height:3.8em;overflow:hidden}.acl.tot{font-weight:700;color:inherit}
+.spl{display:flex;gap:8px;font-size:9.5px;color:var(--muted)}.spl span{display:inline-flex;align-items:center;gap:3px}.spl i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.spl i.ok,.spbar i.ok{background:var(--ok)}.spl i.info,.spbar i.info{background:var(--info)}.spl i.warn,.spbar i.warn{background:var(--warn)}.spl i.bad,.spbar i.bad{background:var(--bad)}
+.spa{margin-top:8px}.spr{display:flex;align-items:center;gap:6px;margin:3px 0}.spn{flex:0 0 78px;font-size:10px;line-height:1.3;overflow-wrap:anywhere;color:var(--ink,inherit)}
+.spb{flex:1;position:relative;height:18px;min-width:0}.spb u{position:absolute;top:-2px;bottom:-2px;border-inline-start:1px dashed var(--line);width:0;text-decoration:none}
+.spbar{position:relative;display:flex;height:100%;border-radius:4px;overflow:hidden}.spbar i{display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:#fff;min-width:0;overflow:hidden}
+.spx{margin-top:0}.spx .spb{height:12px}.spx span{position:absolute;top:0;transform:translateX(50%);font-size:9px;color:var(--muted)}[dir=ltr] .spx span{transform:translateX(-50%)}
 </style>
 </head>
 <body>
@@ -994,7 +1000,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.60';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.61';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -4231,6 +4237,18 @@ const anColChart = (cls, rows, studs) => {
         <div class="acr">${items.map(([n, v, k]) => col(v, k)).join('')}</div></div>
       <div class="acr acn">${items.map(([n, v, k]) => `<div class="acl ${k === 'tot' ? 'tot' : ''}">${esc(n)}</div>`).join('')}</div></div></div></div>`;
 };
+/* نمودار پراکندگی نمرات: هر ردیف یک درس (بهترین‌ها بالاتر)، طول نوار = تعداد دانش‌آموزان، چهار طیف رنگی */
+const anSpread = (cls, rows) => {
+  const cs = rows.filter(c => c.b4 && c.avg != null).slice().sort((a, b) => b.avg - a.avg);
+  if (!cs.length) return '';
+  const T = c => c.b4.reduce((t, x) => t + x, 0), mx = Math.max(...cs.map(T), 1);
+  const st = [1, 2, 5, 10, 20, 50].find(s => mx / s <= 6) || 100, top = Math.ceil(mx / st) * st, ticks = []; for (let v = 0; v <= top; v += st) ticks.push(v);
+  const KS = [[3, 'ok', '۱۷ تا ۲۰'], [2, 'info', '۱۵ تا ۱۷'], [1, 'warn', '۱۰ تا ۱۵'], [0, 'bad', '۰ تا ۱۰']];
+  const grid = ticks.map(v => `<u style="inset-inline-start:${v / top * 100}%"></u>`).join('');
+  return `<div class="ach"><div class="row" style="align-items:center"><b>${esc(cls)}</b><span class="grow"></span><span class="spl">${KS.map(k => `<span><i class="${k[1]}"></i>${k[2]}</span>`).join('')}</span></div>
+    <div class="spa">${cs.map(c => `<div class="spr"><div class="spn">${esc(c.course)}</div><div class="spb">${grid}<div class="spbar" style="width:${T(c) / top * 100}%">${KS.map(k => c.b4[k[0]] ? `<i class="${k[1]}" style="flex:${c.b4[k[0]]}" title="${k[2]}: ${nf(c.b4[k[0]])} نفر">${nf(c.b4[k[0]])}</i>` : '').join('')}</div></div></div>`).join('')}
+      <div class="spr spx"><div class="spn"></div><div class="spb">${ticks.map(v => `<span style="inset-inline-start:${v / top * 100}%">${nf(v)}</span>`).join('')}</div></div></div></div>`;
+};
 const anC = v => v == null ? '' : v >= 15 ? 'ok' : v >= 12 ? 'info' : v >= 10 ? 'warn' : 'bad';
 const anL = v => v == null ? '—' : v >= 17 ? 'عالی' : v >= 15 ? 'خوب' : v >= 12 ? 'متوسط' : v >= 10 ? 'ضعیف' : 'نیازمند اقدام';
 const anCp = p => p == null ? '' : p >= 60 ? 'ok' : p >= 45 ? 'info' : p >= 30 ? 'warn' : 'bad';
@@ -4395,13 +4413,14 @@ async function mAna(el) {
     } else if (mgr) {                                   // نمای کلی مدیر
       const clsL = uniq(D.cc.map(c => c.cls)).sort(byFa), crs = uniq(D.cc.map(c => c.course)).sort(byFa), probs = [];
       const good = D.cc.filter(c => c.n >= 4 && c.avg >= 15).sort((a, b) => b.avg - a.avg).slice(0, 5);
-      B.innerHTML = `<h3>میانگین دروس هر کلاس</h3><p class="muted small">درس‌ها از بالاترین میانگین به پایین‌ترین آمده‌اند؛ ستون آخر (آبی تیره) میانگین کل دروس کلاس است. رنگ‌ها: سبز ≥ ۱۵، آبی ۱۲ تا ۱۵، نارنجی ۱۰ تا ۱۲، قرمز زیر ۱۰.</p>${clsL.map(k => anColChart(k, D.cc.filter(c => c.cls === k), D.students)).join('')}
+      B.innerHTML = `<h3>میانگین دروس هر کلاس</h3><p class="muted small">درس‌ها از بالاترین میانگین به پایین‌ترین آمده‌اند؛ ستون آخر (آبی تیره) میانگین کل دروس کلاس است. رنگ‌ها: سبز ≥ ۱۵، آبی ۱۲ تا ۱۵، نارنجی ۱۰ تا ۱۲، قرمز زیر ۱۰.</p>${clsL.map(k => anColChart(k, D.cc.filter(c => c.cls === k), D.students)).join('')}<h3 style="margin-top:14px">پراکندگی نمرات در هر درس</h3><p class="muted small">طول هر نوار تعداد دانش‌آموزان آن درس است؛ درس‌های بهتر بالاترند.</p>${clsL.map(k => anSpread(k, D.cc.filter(c => c.cls === k))).join('')}
         <h3 style="margin-top:14px">مهم‌ترین مشکل‌ها و پیشنهاد برای دبیران</h3><p class="muted small">درس‌هایی که مشکل مشابه دارند کنار هم آمده‌اند و پیشنهاد فقط یک‌بار نوشته شده است.</p>${anGroups(D.cc, true) || '<div class="empty">مشکل جدی دیده نشد.</div>'}
         ${good.length ? `<h3 style="margin-top:14px">نقاط قوت</h3>${good.map(c => `<div class="anc ok"><div class="anh"><b>${esc(c.course)}</b><span class="muted small">کلاس ${esc(c.cls)}${c.teacher ? ' · ' + esc(c.teacher) : ''}</span><span class="grow"></span><span class="anp ok">میانگین ${nf(c.avg)}</span></div></div>`).join('')}` : ''}`;
     } else {                                            // نمای کلی دبیر
       const l = D.cc.slice().sort((a, b) => worst(b) - worst(a) || a.avg - b.avg);
       const gs = anGroups(l, false);
-      B.innerHTML = `${gs ? `<h3>خلاصه‌ی مشکل‌ها و پیشنهاد</h3><p class="muted small">درس‌های دارای مشکل مشابه کنار هم آمده‌اند و پیشنهاد فقط یک‌بار نوشته شده است.</p>${gs}` : ''}<h3 style="margin-top:14px">جزئیات هر درس و کلاس</h3><p class="muted small">مشکل‌دارترین‌ها اول آمده‌اند.</p>${l.map(c => anCard(c, cAvg[norm(c.course)], false, true)).join('')}`;
+      const sp = uniq(l.map(c => c.cls)).sort(byFa).map(k => anSpread(k, l.filter(c => c.cls === k))).join('');
+      B.innerHTML = `${sp ? `<h3>پراکندگی نمرات در هر درس</h3><p class="muted small">طول هر نوار تعداد دانش‌آموزان آن درس است؛ درس‌های بهتر بالاترند.</p>${sp}` : ''}${gs ? `<h3 style="margin-top:14px">خلاصه‌ی مشکل‌ها و پیشنهاد</h3><p class="muted small">درس‌های دارای مشکل مشابه کنار هم آمده‌اند و پیشنهاد فقط یک‌بار نوشته شده است.</p>${gs}` : ''}<h3 style="margin-top:14px">جزئیات هر درس و کلاس</h3><p class="muted small">مشکل‌دارترین‌ها اول آمده‌اند.</p>${l.map(c => anCard(c, cAvg[norm(c.course)], false, true)).join('')}`;
     }
   };
   paint();
@@ -5346,6 +5365,9 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.61', d:'۱۴۰۵/۰۸/۲۶', items:[
+    'تحلیل آزمون‌ها: نمودار جدید «پراکندگی نمرات در هر درس» برای هر کلاس (مدیر) و هر کلاس دبیر: هر ردیف یک درس با نوار چهاررنگ که طولش تعداد دانش‌آموزان است — سبز ۱۷ تا ۲۰، آبی ۱۵ تا ۱۷، نارنجی ۱۰ تا ۱۵ و قرمز ۰ تا ۱۰. درس‌های بهتر بالاتر می‌آیند.',
+  ] },
   { v:'v5.60', d:'۱۴۰۵/۰۸/۲۷', items:[
     'تحلیل آزمون‌ها (نمای مدیر): جدول «نقشه‌ی میانگین کلاس‌ها و درس‌ها» برداشته شد و به‌جای آن برای هر کلاس یک نمودار ستونی کوچک آمده است: میانگین هر درس به ترتیب (از بالاترین) و ستون آخر میانگین کل دروس کلاس. نام درس‌ها با فونت ریز زیر محور افقی نوشته می‌شود.',
   ] },
@@ -5359,10 +5381,6 @@ const CHANGELOG = [
   { v:'v5.57', d:'۱۴۰۵/۰۸/۲۵', items:[
     'پرداخت شهریه: تب «ترتیب» حذف شد؛ لیست فقط به‌صورت فهرست کلاس است ولی نام‌ها همیشه بر اساس تاریخ آخرین پرداخت مرتب می‌شوند (جدیدترین اول).',
     'پرداخت شهریه: همه‌ی پرداخت‌های ثبت‌شده قابل ویرایش شدند (مبلغ، تاریخ و توضیح) از پنجره‌ی «ثبت پرداخت» ← دکمه‌ی «ویرایش».',
-  ] },
-  { v:'v5.56', d:'۱۴۰۵/۰۸/۲۵', items:[
-    'پرداخت شهریه: تب «لیست» به‌طور پیش‌فرض بر اساس تاریخ آخرین پرداخت (جدیدترین اول) مرتب می‌شود و دانش‌آموزان بدون پرداخت در پایین می‌آیند؛ با دکمه‌ی «ترتیب» می‌توان به ترتیب فهرست کلاس برگشت.',
-    'پرداخت شهریه: در پنجره‌ی «ثبت پرداخت»، فهرست پرداخت‌های ثبت‌شده به ترتیب تاریخ پرداخت (جدیدترین اول) نمایش داده می‌شود.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5654,7 +5672,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.60';
+const VERSION = 'v5.61';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
@@ -8376,7 +8394,8 @@ function anaData_(u, p) {
     const o = cc[k], v = o.v.slice().sort((a, b) => a - b), n = v.length, mean = anaMean_(v), sd = Math.sqrt(anaMean_(v.map(x => (x - mean) * (x - mean))));
     const tr = (asmL[k] || []).sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
     const bk = [0, 0, 0, 0, 0]; v.forEach(x => { bk[x < 10 ? 0 : x < 12 ? 1 : x < 14 ? 2 : x < 17 ? 3 : 4]++; });
-    return { cls:o.cls, course:o.course, teacher:me ? '' : (tn[tOf[k]] || ''), n, avg:r2_(mean), sd:r2_(sd), fail:bk[0], exc:bk[4], bk, tr };
+    const b4 = [0, 0, 0, 0]; v.forEach(x => { b4[x < 10 ? 0 : x < 15 ? 1 : x < 17 ? 2 : 3]++; });   // پراکندگی: زیر ۱۰ / ۱۰ تا ۱۵ / ۱۵ تا ۱۷ / ۱۷ تا ۲۰
+    return { cls:o.cls, course:o.course, teacher:me ? '' : (tn[tOf[k]] || ''), n, avg:r2_(mean), sd:r2_(sd), fail:bk[0], exc:bk[4], bk, b4, tr };
   }).sort((a, b) => a.cls.localeCompare(b.cls, 'fa') || a.course.localeCompare(b.course, 'fa'));
   // آزمون‌های موسسه: فقط نتیجه‌های ثبت‌شده توسط مدرسه (نتایج ثبت‌شده‌ی دانش‌آموزان در تحلیل نمی‌آید)
   const sc2 = rows_('jsc'), pcs = rows_('jpc'), pcBy = {}, evl = [], myIns = [], ins = [];
