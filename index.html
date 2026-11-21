@@ -1031,7 +1031,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.66';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.67';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -3839,6 +3839,35 @@ async function jAgg(type) {
 }
 const INVIS = new RegExp('[' + [0x200c, 0x200d, 0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0xfeff].map(c => String.fromCharCode(c)).join('') + ']', 'g');
 const absKey = t => norm(t).replace(/\s/g, '');
+function jSubDlg(id, d, cls, done) {             // افزودن، حذف و تغییر نام/ضریب دروسِ یک آزمون (برای رشته‌ی کلاس انتخاب‌شده)
+  const m = (d.meta || {})[cls] || {}, rows = (d.subs[cls] || []).map(q => ({ n:q.n, coef:String(q.coef).replace('.', '٫'), from:q.n }));
+  dialog(`<h3>دروس آزمون · رشته‌ی ${esc(m.major || '—')}</h3>
+    <p class="muted small">${esc(jxLbl(d.exam))} · تغییر برای همه‌ی کلاس‌های همین رشته در این آزمون اعمال می‌شود. با تغییر نام یک درس، نمره‌های ثبت‌شده‌اش حفظ می‌شود؛ با حذف درس، نمره‌های آن درس پاک می‌شود. اگر نتیجه‌ای وارد کرده‌اید و ذخیره نکرده‌اید، اول آن را ذخیره کنید.</p>
+    <datalist id="jsDl">${(m.opts || []).map(o => `<option value="${esc(o.n)}"></option>`).join('')}</datalist>
+    <div id="jsRows"></div>
+    <div class="dlg-actions"><button class="btn" id="jsAdd" type="button">+ افزودن درس</button><button class="btn primary" id="jsGo" type="button">ذخیره</button>${m.custom ? '<button class="btn" id="jsRst" type="button">بازگشت به دروس پیش‌فرض</button>' : ''}<button class="btn" data-close>انصراف</button></div>`, dl => {
+    const box = $('#jsRows', dl);
+    const draw = () => {
+      box.innerHTML = rows.length ? `<div class="row" style="gap:6px;align-items:center;font-size:12px;color:var(--muted)"><span style="flex:1 1 auto">نام درس</span><span style="width:74px">ضریب</span><span style="width:54px"></span></div>` + rows.map((r, i) => `<div class="row" style="gap:6px;align-items:center;margin:4px 0"><input data-i="${i}" data-k="n" list="jsDl" maxlength="40" value="${esc(r.n)}" placeholder="نام درس" style="flex:1 1 auto;min-width:0" autocomplete="off" aria-label="نام درس"><input data-i="${i}" data-k="coef" inputmode="decimal" value="${esc(r.coef)}" style="width:74px" aria-label="ضریب"><button class="btn sm danger" type="button" data-del="${i}" style="width:54px">حذف</button></div>`).join('') : '<div class="empty">درسی نیست؛ با «افزودن درس» شروع کنید.</div>';
+    };
+    draw();
+    box.oninput = e => { const t = e.target, r = rows[+t.dataset.i]; if (r && t.dataset.k) r[t.dataset.k] = t.value; };
+    box.onchange = e => {                          // انتخاب درس از فهرست درس‌های مدرسه: ضریبش خودکار پر می‌شود
+      const t = e.target, r = rows[+t.dataset.i]; if (!r || t.dataset.k !== 'n') return;
+      const o = (m.opts || []).find(x => norm(x.n) === norm(t.value));
+      if (o && !r.from) { r.coef = String(o.coef).replace('.', '٫'); draw(); }
+    };
+    box.onclick = e => { const b = e.target.closest('[data-del]'); if (b) { rows.splice(+b.dataset.del, 1); draw(); } };
+    $('#jsAdd', dl).onclick = () => { rows.push({ n:'', coef:'۱', from:'' }); draw(); const l = $$('input[data-k="n"]', box); if (l.length) l[l.length - 1].focus(); };
+    const send = async (data, btn) => { try { const r = await api('jsubSave', Object.assign({ id, major:m.major }, data), btn); dl.close(); toast(r.message); done(); } catch (err) { fail(err); } };
+    $('#jsGo', dl).onclick = e => {
+      if (!rows.length) return toast('دست‌کم یک درس لازم است.');
+      if (rows.some(r => !String(r.n).trim())) return toast('نام همه‌ی درس‌ها را بنویسید.');
+      send({ subs:rows.map(r => ({ n:String(r.n).trim(), coef:r.coef, from:r.from || '' })) }, e.target);
+    };
+    const rs = $('#jsRst', dl); if (rs) rs.onclick = async e => { if (await askConfirm('دروس این آزمون برای این رشته به حالت پیش‌فرض برگردد؟ نمره‌ی درس‌هایی که در فهرست پیش‌فرض نیستند پاک می‌شود.', 'بازگشت', true)) send({ reset:true }, e.target); };
+  });
+}
 async function jEntryP(id) {
   const pane = $('#jPane'); pane.innerHTML = loadingHtml;
   let d;
@@ -3859,15 +3888,16 @@ async function jEntryP(id) {
     const list = d.students.filter(s => norm(s.cls) === norm(cls)), subs = d.subs[cls] || [];
     pane.innerHTML = `<hr style="margin:18px 0;border:0;border-top:1px solid var(--line)">
       <div class="datebar"><b class="dt">ورود نتایج · ${esc(jxLbl(d.exam))}${d.exam.mode ? ' · ' + esc(d.exam.mode) : ''}</b><button class="btn sm" id="jClose" type="button">بستن</button></div>
-      <div class="row" style="margin:10px 0"><label class="f">کلاس<select id="jCls">${cl.map(c => `<option ${norm(c) === norm(cls) ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label></div>
+      <div class="row" style="margin:10px 0"><label class="f">کلاس<select id="jCls">${cl.map(c => `<option ${norm(c) === norm(cls) ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label><button class="btn" id="jSubs" type="button" style="align-self:end">ویرایش دروس آزمون${((d.meta || {})[cls] || {}).custom ? ' ●' : ''}</button></div>
       ${subs.length ? `<details style="margin-bottom:8px"><summary>ورود گروهی (چسباندن از اکسل)</summary>
         <p class="muted small">هر سطر: <b>کد ملی</b> (یا نام و نام خانوادگی) و بعد درصد دروس به این ترتیب: <b>${subs.map(q => esc(q.n)).join('، ')}</b> و در آخر <b>تراز</b> (با ویرگول یا Tab جدا شود؛ درصد منفی هم مجاز است). برای غیبت به‌جای درصدها بنویسید <b>موجه</b> یا <b>غیرموجه</b>.</p>
         <textarea id="jPaste" placeholder="0012345678، ۶۵، ۴۰، ۷۲٫۵، ۸۰"></textarea><button class="btn" id="jFill" type="button" style="margin-top:6px">اعمال روی فهرست</button></details>
       <div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>دانش‌آموز</th>${subs.map(q => vth(q.n, subs.map(z => z.n), 'ضریب ' + nf(q.coef))).join('')}<th>غیبت</th><th>تراز</th></tr></thead><tbody id="jRows">
       ${list.map((s, i) => `<tr><td class="num">${i + 1}</td><td><b>${esc(s.name)}</b></td>${subs.map(q => `<td><input class="gin" data-c="${esc(s.code)}" data-q="${esc(q.n)}" inputmode="decimal" ${stv[s.code] ? 'disabled' : ''} value="${esc(val[s.code][q.n] || '')}" aria-label="${esc(q.n)} ${esc(s.name)}"></td>`).join('')}<td><select data-ab="${esc(s.code)}" aria-label="غیبت ${esc(s.name)}"><option value="">—</option><option ${stv[s.code] === 'موجه' ? 'selected' : ''}>موجه</option><option ${stv[s.code] === 'غیرموجه' ? 'selected' : ''}>غیرموجه</option></select></td><td><input class="gin" data-t="${esc(s.code)}" inputmode="decimal" ${stv[s.code] ? 'disabled' : ''} value="${esc(tzv[s.code] || '')}" aria-label="تراز ${esc(s.name)}"></td></tr>`).join('')}</tbody></table></div>
-      <div class="savebar"><span class="grow small muted" id="jSum"></span><button class="btn primary" id="jSave" type="button">ذخیره‌ی نتایج (همه‌ی کلاس‌ها)</button></div>` : '<div class="empty">برای رشته‌ی این کلاس فهرست دروس آزمایشی تعریف نشده است.</div>'}`;
+      <div class="savebar"><span class="grow small muted" id="jSum"></span><button class="btn primary" id="jSave" type="button">ذخیره‌ی نتایج (همه‌ی کلاس‌ها)</button></div>` : '<div class="empty">برای رشته‌ی این کلاس فهرست دروس آزمایشی تعریف نشده است. با «ویرایش دروس آزمون» درس اضافه کنید.</div>'}`;
     $('#jClose').onclick = () => { pane.innerHTML = ''; };
     $('#jCls').onchange = e => { cls = e.target.value; JX.cls = cls; view(); };
+    $('#jSubs').onclick = () => jSubDlg(id, d, cls, () => jEntryP(id));
     if (!subs.length) return;
     const refresh = () => {
       let bad = 0, n = 0;
@@ -5445,6 +5475,10 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.67', d:'۱۴۰۵/۰۸/۳۰', items:[
+    'آزمون‌های آزمایشی ← ورود نتایج: دکمه‌ی «ویرایش دروس آزمون» اضافه شد؛ مدیر می‌تواند برای هر آزمون و هر رشته درس اضافه یا حذف کند و نام و ضریب درس‌ها را تغییر دهد. نتایج، رتبه‌ها و نتایج تجمیعی بر پایه‌ی همین دروس محاسبه می‌شود.',
+    'با تغییر نام یک درس، نمره‌های ثبت‌شده‌ی آن حفظ می‌شود؛ حذف درس نمره‌های آن را پاک می‌کند. «بازگشت به دروس پیش‌فرض» فهرست اصلی رشته را برمی‌گرداند.',
+  ] },
   { v:'v5.66', d:'۱۴۰۵/۰۸/۳۰', items:[
     'سربرگ هنگام اسکرول به پایین صفحه ثابت می‌ماند و همیشه در دسترس است.',
     'آیکون «صفحه‌ی اصلی» از داخل ماژول‌ها به سربرگ منتقل شد؛ فقط وقتی ماژولی باز است نمایش داده می‌شود و عنوان ماژول در بالای محتوا می‌ماند.',
@@ -5463,11 +5497,6 @@ const CHANGELOG = [
     'صفحه‌ی اصلی مدیر: نوار جدید «اطلاعات مدرسه» با این ماژول‌ها ساخته شد: مدرسه (نام مدرسه، نوبت‌ها و هویت برنامه)، مدیر مدرسه (تعریف مدیر و مشاور)، کلاس، دبیران، دانش‌آموزان، دروس، برنامه هفتگی و چارت مدرسه.',
     'برنامه هفتگی: به ترتیب «شیفت مدرسه» (قبلاً هفته‌ی فرد و زوج)، «تعداد زنگ‌ها»، «ساعت زنگ‌ها» و سپس برنامه‌ی کلاس‌ها در یک ماژول آمد.',
     'ماژول «تنظیمات» فقط «حجم داده‌ها» و «ارتقای سال» را دارد؛ تب‌های عمومی، کلاس، برنامه هفتگی، چارت مدرسه و دروس به ماژول مستقل رفتند. دبیران و دانش‌آموزان از نوار «خدمات اداری» به نوار تازه منتقل شدند (در چیدمان‌های سفارشی‌شده ممکن است ماژول‌های تازه در آخرین نوار باشند).',
-  ] },
-  { v:'v5.62', d:'۱۴۰۵/۰۸/۲۷', items:[
-    'جلسات با والدین: فونت و ارتفاع ردیف‌های ثبت حضور کوچک‌تر شد؛ در صفحه‌های عریض دکمه‌های حضور هم‌ردیف نام قرار می‌گیرند.',
-    'حضور و غیاب: تب «وضعیت» برداشته شد و به ماژول مستقل «برنامه روز جاری» (در بخش آموزشی) تبدیل شد؛ علاوه بر امروز، با دکمه‌های «روز قبل / روز بعد» یا تقویم می‌توان برنامه‌ی روزهای آینده را دید.',
-    'تنظیمات: تب «صفحه‌ی اصلی» به ماژول مستقل «تنظیمات صفحه اصلی» و تب «نسخه‌ی آفلاین» به ماژول مستقل «دانلود نسخه آفلاین» تبدیل شد (در بخش اجرایی). اگر چیدمان سفارشی ذخیره کرده‌اید، ماژول‌های تازه در آخرین نوار می‌آیند و می‌توانید جایشان را در تنظیمات صفحه اصلی تغییر دهید.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5759,7 +5788,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.66';
+const VERSION = 'v5.67';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
@@ -7052,7 +7081,10 @@ const INS_MAX_N = 60;
 const r2_ = x => Math.round(x * 100) / 100;
 const JMODE = ['حضوری', 'آنلاین'];
 function jexAll_() {                           // آزمون‌های قدیمیِ «امتیاز مستقیم» (بدون نوع) کنار گذاشته شده‌اند
-  return rows_('jex').filter(r => str_(r[0]) && JKIND[str_(r[7])]).map(r => ({ id:str_(r[0]), title:str_(r[1]), date:str_(r[2]), grade:str_(r[3]), max:100, type:str_(r[7]), mode:JMODE.indexOf(str_(r[8])) >= 0 ? str_(r[8]) : '', name:str_(r[9]) || 'راه موفقیت' }));
+  return rows_('jex').filter(r => str_(r[0]) && JKIND[str_(r[7])]).map(r => ({ id:str_(r[0]), title:str_(r[1]), date:str_(r[2]), grade:str_(r[3]), max:100, type:str_(r[7]), mode:JMODE.indexOf(str_(r[8])) >= 0 ? str_(r[8]) : '', name:str_(r[9]) || 'راه موفقیت', subs:jsubParse_(r[10]) }));
+}
+function jsubParse_(v) {                     // دروس اختصاصی آزمون به‌ازای رشته: { رشته: [{n, coef}] }
+  try { const o = JSON.parse(str_(v) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch (e) { return {}; }
 }
 const jexOf_ = id => jexAll_().find(e => e.id === str_(id)) || null;
 function jexStudents_(e, cls) {              // دانش‌آموزان شرکت‌کننده: پایه‌ی آزمون (خالی = همه) و در صورت نیاز یک کلاس
@@ -7117,12 +7149,12 @@ function jexLoad_(u, p) {                      // مدیر: داده‌ی ورو
   const st = {}; rows_('jsc').forEach(r => { if (str_(r[0]) === e.id && str_(r[5])) st[code_(r[1])] = str_(r[5]); });
   const pc = {}; rows_('jpc').forEach(r => { if (str_(r[0]) === e.id) (pc[code_(r[1])] = pc[code_(r[1])] || {})[str_(r[2])] = Number(r[3]); });
   const tz = {}; rows_('jsc').forEach(r => { if (str_(r[0]) === e.id && !str_(r[5]) && hasVal_(r[4])) tz[code_(r[1])] = Number(r[4]); });
-  const subs = {};
+  const subs = {}, meta = {};
   const students = jexStudents_(e, p.cls).map(s => {
-    if (!subs[s.cls]) subs[s.cls] = jsubOf_(classOf_(s.cls)).map(q => ({ n:q.n, coef:q.coef }));
+    if (!subs[s.cls]) { subs[s.cls] = jsubOf_(classOf_(s.cls), e).map(q => ({ n:q.n, coef:q.coef })); const c0 = classOf_(s.cls); meta[s.cls] = { major:c0 ? c0.major : '', custom:!!(c0 && Array.isArray(e.subs[c0.major]) && e.subs[c0.major].length), opts:c0 ? coefs_().filter(x => norm_(x.grade) === norm_(c0.grade) && norm_(x.major) === norm_(c0.major) && x.coef > 0).map(x => ({ n:x.course, coef:x.coef })) : [] }; }
     return { code:s.code, name:s.name, cls:s.cls, pc:pc[s.code] || {}, st:st[s.code] || '', tz:tz[s.code] != null ? tz[s.code] : null };
   });
-  return { status:'ok', exam:e, classes:jexClasses_(e), students, subs };
+  return { status:'ok', exam:e, classes:jexClasses_(e), students, subs, meta };
 }
 // نتایج یک آزمون برای مشاهده (مدیر، مشاور و دبیر؛ دبیر فقط کلاس‌های خودش)
 function jamRes_(u, p) {
@@ -7139,7 +7171,7 @@ function jamRes_(u, p) {
   const rows = [];
   users_('student').forEach(s => {
     const x = sc[s.code]; if (!x || (allow && !allow[norm_(s.cls)])) return;
-    const k = x.st ? null : jpcCalc_(classOf_(s.cls), pcAll[s.code] || {}), cv = byCls[norm_(s.cls)] || [];
+    const k = x.st ? null : jpcCalc_(classOf_(s.cls), pcAll[s.code] || {}, e), cv = byCls[norm_(s.cls)] || [];
     const pw = k ? k.list.filter(q => q.pct != null && q.coef > 0) : [], sw = pw.reduce((a, q) => a + q.coef, 0);
     rows.push({ code:s.code, name:s.name, cls:s.cls, st:x.st, taraz:x.taraz, pct:sw ? r2_(pw.reduce((a, q) => a + q.pct * q.coef, 0) / sw) : null, det:k ? k.list : [],
       rankCls:x.taraz == null ? null : 1 + cv.filter(v => v > x.taraz).length,
@@ -7164,7 +7196,7 @@ function jamAgg_(u, p) {
   const rows = stu.map(s => ({ code:s.code, name:s.name, cells:E.map(e => {
     const r = (sc[e.id] || {})[s.code]; if (!r) return null;
     const st = str_(r[5]), tz = tzOf(r); let pct = null;
-    if (!st) { const k = jpcCalc_(c, (pcs[e.id] || {})[s.code] || {}), w = k.list.filter(q => q.pct != null && q.coef > 0), sw = w.reduce((a, q) => a + q.coef, 0); pct = sw ? r2_(w.reduce((a, q) => a + q.pct * q.coef, 0) / sw) : null; }
+    if (!st) { const k = jpcCalc_(c, (pcs[e.id] || {})[s.code] || {}, e), w = k.list.filter(q => q.pct != null && q.coef > 0), sw = w.reduce((a, q) => a + q.coef, 0); pct = sw ? r2_(w.reduce((a, q) => a + q.pct * q.coef, 0) / sw) : null; }
     const peers = stu.map(x => tzOf((sc[e.id] || {})[x.code])).filter(v => v != null);   // رتبه در همان آزمون، میان هم‌کلاسی‌ها، بر پایه‌ی تراز
     return { st, pct, taraz:tz, rank:tz == null ? null : 1 + peers.filter(v => v > tz).length };
   }) }));
@@ -7183,7 +7215,7 @@ function jamea_(s) {
     let det = null, pct = null;
     if (!st) {
       const pc = {}; pcs.forEach(r => { if (str_(r[0]) === e.id && code_(r[1]) === s.code) pc[str_(r[2])] = Number(r[3]); });
-      det = jpcCalc_(classOf_(s.cls), pc).list.filter(x => x.pct != null);
+      det = jpcCalc_(classOf_(s.cls), pc, e).list.filter(x => x.pct != null);
       const w = det.filter(x => x.coef > 0), sw = w.reduce((a, x) => a + x.coef, 0); pct = sw ? r2_(w.reduce((a, x) => a + x.pct * x.coef, 0) / sw) : null;
     }
     out.push({ id:e.id, type:e.type, name:e.name, title:e.title, date:e.date, mode:e.mode, det, st, pct, taraz:tz,
@@ -7201,16 +7233,18 @@ const JSUB = {
 };
 function jexHeads_() {
   const sh = sheet_('jex');
-  if (sh.getMaxColumns() < 10) sh.insertColumnsAfter(sh.getMaxColumns(), 10 - sh.getMaxColumns());
-  [[7, 'موسسه'], [8, 'نوع ثبت'], [9, 'حالت برگزاری'], [10, 'نام آزمون']].forEach(h => { if (!str_(sh.getRange(1, h[0]).getValue())) { sh.getRange(1, h[0]).setValue(h[1]).setFontWeight('bold'); sh.getRange(1, h[0], sh.getMaxRows(), 1).setNumberFormat('@'); } });
+  if (sh.getMaxColumns() < 11) sh.insertColumnsAfter(sh.getMaxColumns(), 11 - sh.getMaxColumns());
+  [[7, 'موسسه'], [8, 'نوع ثبت'], [9, 'حالت برگزاری'], [10, 'نام آزمون'], [11, 'دروس آزمون']].forEach(h => { if (!str_(sh.getRange(1, h[0]).getValue())) { sh.getRange(1, h[0]).setValue(h[1]).setFontWeight('bold'); sh.getRange(1, h[0], sh.getMaxRows(), 1).setNumberFormat('@'); } });
 }
-function jsubOf_(c) {
+function jsubOf_(c, e) {                      // e (اختیاری): آزمونی که دروس اختصاصی دارد
   if (!c) return [];
+  const ov = e && e.subs && e.subs[c.major];
+  if (Array.isArray(ov) && ov.length) return ov.map(q => ({ n:String(q.n), coef:Number(q.coef) > 0 ? Number(q.coef) : 1 }));
   const list = JSUB[c.major] || [], cf = coefs_().filter(x => norm_(x.grade) === norm_(c.grade) && norm_(x.major) === norm_(c.major));
   return list.map(q => { const f = cf.find(x => norm_(x.course) === norm_(q[1])); return { n:q[0], coef:f && f.coef > 0 ? f.coef : 1 }; });
 }
-function jpcCalc_(c, pc) {                     // امتیاز = میانگین وزنی نمره‌ی بیست × ۵
-  const subs = jsubOf_(c); let sw = 0, sc = 0, used = 0;
+function jpcCalc_(c, pc, e) {                  // امتیاز = میانگین وزنی نمره‌ی بیست × ۵
+  const subs = jsubOf_(c, e); let sw = 0, sc = 0, used = 0;
   const list = subs.map(q => {
     const v = pc[q.n];
     if (v == null || v === '' || isNaN(v)) return { n:q.n, coef:q.coef, pct:null, s20:null };
@@ -7243,6 +7277,52 @@ function jexMigrate_() {                       // یک‌بار: امتیازه�
     setKV_({ jexV3:'1' });
   } finally { lock.releaseLock(); }
 }
+// مدیر: افزودن/حذف/تغییر نام و ضریب دروسِ یک آزمون برای یک رشته (یا بازگشت به دروس پیش‌فرض)
+function jsubSave_(u, p) {
+  const e = jexOf_(p.id);
+  if (!e) return err_('آزمون پیدا نشد.');
+  const major = str_(p.major);
+  if (!major || !classes_().some(c => norm_(c.major) === norm_(major))) return err_('رشته‌ی انتخاب‌شده تعریف نشده است.');
+  const all = jexAll_().find(x => x.id === e.id).subs || {}, next = Object.assign({}, all);
+  const stuOf = {}; users_('student').forEach(s => { const c = classOf_(s.cls); if (c && norm_(c.major) === norm_(major)) stuOf[s.code] = true; });
+  const tidy = (keep, ren) => {                // نمره‌ی درس‌های تغییرنام‌یافته منتقل و نمره‌ی درس‌های حذف‌شده پاک می‌شود
+    const moved = [];
+    rows_('jpc').forEach(r => {
+      if (str_(r[0]) !== e.id || !stuOf[code_(r[1])]) return;
+      const nm = str_(r[2]), to = Object.prototype.hasOwnProperty.call(ren, nm) ? ren[nm] : (keep[nm] ? nm : null);
+      if (to) { const x = r.slice(0, 5); x[2] = to; moved.push(x); }
+    });
+    deleteWhere_('jpc', r => str_(r[0]) === e.id && stuOf[code_(r[1])]);
+    if (moved.length) append_('jpc', moved);
+  };
+  if (p.reset) {
+    delete next[major];
+    const keep = {}; jsubOf_(classes_().find(c => norm_(c.major) === norm_(major)), { subs:{} }).forEach(q => keep[q.n] = 1);
+    tidy(keep, {});
+  } else {
+    const list = Array.isArray(p.subs) ? p.subs : [], out = [], seen = {}, ren = {};
+    if (!list.length) return err_('دست‌کم یک درس لازم است.');
+    if (list.length > 15) return err_('حداکثر ۱۵ درس مجاز است.');
+    for (const q of list) {
+      const n = clean_(q && q.n, 40), cf = num_(q && q.coef);
+      if (!n) return err_('نام هر درس را بنویسید.');
+      if (seen[norm_(n)]) return err_('نام درس تکراری است: ' + n);
+      if (cf == null || cf <= 0 || cf > 20) return err_('ضریب درس «' + n + '» باید عددی بین ۰ تا ۲۰ باشد.');
+      seen[norm_(n)] = 1; out.push({ n, coef:cf });
+      const from = str_(q && q.from);
+      if (from && from !== n) ren[from] = n;
+    }
+    next[major] = out;
+    const keep = {}; out.forEach(q => keep[q.n] = 1);
+    tidy(keep, ren);
+  }
+  jexHeads_();
+  const i = rows_('jex').findIndex(r => str_(r[0]) === e.id);
+  if (i < 0) return err_('آزمون پیدا نشد.');
+  const json = Object.keys(next).length ? JSON.stringify(next) : '';
+  sheet_('jex').getRange(i + 2, 11).setNumberFormat('@').setValue(json); forget_('jex');
+  return { status:'ok', message:p.reset ? 'دروس این آزمون به حالت پیش‌فرض برگشت.' : 'دروس آزمون برای رشته‌ی «' + major + '» ذخیره شد.' };
+}
 function jpcSave_(u, p) {
   const e = jexOf_(p.id);
   if (!e) return err_('آزمون پیدا نشد.');
@@ -7254,7 +7334,7 @@ function jpcSave_(u, p) {
       if (!Object.prototype.hasOwnProperty.call(JABS, ab)) { bad.push(s.name + ' (وضعیت غیبت)'); return; }
       sr.push([e.id, s.code, s.name, s.cls, JABS[ab], ab, now]); return;
     }
-    const c = classOf_(s.cls), subs = jsubOf_(c), src = data[s.code] || {}; let any = false;
+    const c = classOf_(s.cls), subs = jsubOf_(c, e), src = data[s.code] || {}; let any = false;
     subs.forEach(q => {
       const raw = src[q.n];
       if (raw === '' || raw == null) return;
@@ -8548,7 +8628,7 @@ function stuCard_(u, p) {
    گزارش فعالیت دبیران و دانش‌آموزان (فقط ۱۰۰ مورد اخیر هر گروه نگه‌داری می‌شود) و ثبت تأخیر/تعجیل/مرخصی کارکنان
    ===================================================================== */
 const ALG_KEEP = { teacher:50, student:50, manager:50 };   // ۵۰ رویداد اخیر برای هر گروه
-const ACT_FA = { attSave:'ثبت حضور و غیاب', grSave:'ثبت نمرات', gpcDecide:'تأیید یا رد تغییر نمره', grDel:'حذف نمرات', exmAdd:'ثبت آزمون کلاسی', facAdd:'ثبت فعالیت کلاسی', facEdit:'ویرایش فعالیت کلاسی', stfEdit:'ویرایش مورد کارکنان', facDel:'حذف فعالیت کلاسی', exmDel:'حذف آزمون کلاسی', myPass:'تغییر رمز', csiSave:'تکمیل اطلاعات مشاوره', insSave:'ثبت نتیجه‌ی آزمون موسسه', insDel:'حذف نتیجه‌ی آزمون موسسه', lrqSave:'درخواست مرخصی دانش‌آموز', lrqReview:'بررسی مرخصی دانش‌آموز', ptaSave:'ثبت جلسه‌ی انجمن اولیا و مربیان', ptaMark:'ثبت شرکت والدین در جلسه', pvrSave:'درخواست مراجعه‌ی اولیا', pvrReview:'پاسخ به درخواست مراجعه', smsToday:'ارسال پیامک غیبت', smsCfgSave:'تنظیمات پیامک', exmDecide:'بررسی آزمون ناهمخوان', feeAdd:'ثبت واریز شهریه', feeStuSave:'نوع شهریه و تخفیف دانش‌آموز', linkSave:'ذخیره‌ی پیوندها', stuStatus:'تغییر وضعیت دانش‌آموز', stfDaySave:'حضور و غیاب روزانه‌ی دبیران', feeDel:'حذف واریز شهریه', feeEdit:'ویرایش واریز شهریه', feeReview:'بررسی واریز شهریه', feeCfgSave:'تغییر مبالغ شهریه', classAdd:'افزودن کلاس', classEdit:'ویرایش کلاس', classDel:'حذف کلاس', userAdd:'افزودن کاربر', userEdit:'ویرایش کاربر', userDel:'حذف کاربر', userReset:'بازنشانی رمز', userResetAll:'بازنشانی رمز همه', dscAdd:'ثبت مورد انضباطی', dscVoid:'بی‌اثر/مؤثر کردن مورد انضباطی', dscCfgSave:'تنظیم نمره‌های منفی انضباط', dscRescale:'تبدیل نمره‌های منفی قدیمی', dapSave:'درخواست حذف نمره‌ی منفی', dapReview:'پاسخ به درخواست حذف نمره‌ی منفی', pvrAdd:'ثبت مراجعه‌ی والدین به مدرسه', dscEdit:'ویرایش مورد انضباطی', dscDel:'حذف مورد انضباطی', absSet:'تعیین وضعیت غیبت', absPenaltySave:'تغییر نمره‌ی غیبت غیرموجه', orgSave:'ذخیره‌ی چارت مدرسه', brandSave:'تغییر هویت برنامه', jexSave:'ثبت آزمون آزمایشی', jexDel:'حذف آزمون آزمایشی', jpcSave:'ثبت نتایج آزمایشی', insReview:'بررسی نتیجه‌ی موسسه', exmAddM:'ثبت آزمون آزمایشی/امتحان ترم در تقویم', stfAdd:'ثبت تأخیر/تعجیل/مرخصی/غیبت کارکنان', stfDel:'حذف مورد کارکنان', schSave:'ذخیره‌ی برنامه‌ی هفتگی', coefSave:'ذخیره‌ی ضرایب', setSave:'ذخیره‌ی تنظیمات', rollRun:'ارتقای سال تحصیلی', phoSave:'ثبت عکس پروفایل', phoDel:'حذف عکس پروفایل', bannerSave:'ثبت بنر مناسبتی'};
+const ACT_FA = { attSave:'ثبت حضور و غیاب', grSave:'ثبت نمرات', gpcDecide:'تأیید یا رد تغییر نمره', grDel:'حذف نمرات', exmAdd:'ثبت آزمون کلاسی', facAdd:'ثبت فعالیت کلاسی', facEdit:'ویرایش فعالیت کلاسی', stfEdit:'ویرایش مورد کارکنان', facDel:'حذف فعالیت کلاسی', exmDel:'حذف آزمون کلاسی', myPass:'تغییر رمز', csiSave:'تکمیل اطلاعات مشاوره', insSave:'ثبت نتیجه‌ی آزمون موسسه', insDel:'حذف نتیجه‌ی آزمون موسسه', lrqSave:'درخواست مرخصی دانش‌آموز', lrqReview:'بررسی مرخصی دانش‌آموز', ptaSave:'ثبت جلسه‌ی انجمن اولیا و مربیان', ptaMark:'ثبت شرکت والدین در جلسه', pvrSave:'درخواست مراجعه‌ی اولیا', pvrReview:'پاسخ به درخواست مراجعه', smsToday:'ارسال پیامک غیبت', smsCfgSave:'تنظیمات پیامک', exmDecide:'بررسی آزمون ناهمخوان', feeAdd:'ثبت واریز شهریه', feeStuSave:'نوع شهریه و تخفیف دانش‌آموز', linkSave:'ذخیره‌ی پیوندها', stuStatus:'تغییر وضعیت دانش‌آموز', stfDaySave:'حضور و غیاب روزانه‌ی دبیران', feeDel:'حذف واریز شهریه', feeEdit:'ویرایش واریز شهریه', feeReview:'بررسی واریز شهریه', feeCfgSave:'تغییر مبالغ شهریه', classAdd:'افزودن کلاس', classEdit:'ویرایش کلاس', classDel:'حذف کلاس', userAdd:'افزودن کاربر', userEdit:'ویرایش کاربر', userDel:'حذف کاربر', userReset:'بازنشانی رمز', userResetAll:'بازنشانی رمز همه', dscAdd:'ثبت مورد انضباطی', dscVoid:'بی‌اثر/مؤثر کردن مورد انضباطی', dscCfgSave:'تنظیم نمره‌های منفی انضباط', dscRescale:'تبدیل نمره‌های منفی قدیمی', dapSave:'درخواست حذف نمره‌ی منفی', dapReview:'پاسخ به درخواست حذف نمره‌ی منفی', pvrAdd:'ثبت مراجعه‌ی والدین به مدرسه', dscEdit:'ویرایش مورد انضباطی', dscDel:'حذف مورد انضباطی', absSet:'تعیین وضعیت غیبت', absPenaltySave:'تغییر نمره‌ی غیبت غیرموجه', orgSave:'ذخیره‌ی چارت مدرسه', brandSave:'تغییر هویت برنامه', jexSave:'ثبت آزمون آزمایشی', jsubSave:'ویرایش دروس آزمون آزمایشی', jexDel:'حذف آزمون آزمایشی', jpcSave:'ثبت نتایج آزمایشی', insReview:'بررسی نتیجه‌ی موسسه', exmAddM:'ثبت آزمون آزمایشی/امتحان ترم در تقویم', stfAdd:'ثبت تأخیر/تعجیل/مرخصی/غیبت کارکنان', stfDel:'حذف مورد کارکنان', schSave:'ذخیره‌ی برنامه‌ی هفتگی', coefSave:'ذخیره‌ی ضرایب', setSave:'ذخیره‌ی تنظیمات', rollRun:'ارتقای سال تحصیلی', phoSave:'ثبت عکس پروفایل', phoDel:'حذف عکس پروفایل', bannerSave:'ثبت بنر مناسبتی'};
 function log_(u, type, desc) {
   try {
     if (!u || ['teacher', 'student', 'manager'].indexOf(u.role) < 0) return;
@@ -8852,7 +8932,7 @@ function bannerSave_(u, p) {
    ===================================================================== */
 const DEP_ACT = (() => {                           // اقدام‌های مجاز هر معاون (حساب معاون = حساب مدیر با دامنه‌ی محدود)
   const L = s => s.split(/\s+/).filter(Boolean);
-  const common = 'me myPass tordSave qsearch', edu = 'liveStatus absList absSet absPenaltySave gradeStatus gpcList gpcDecide galList facList facDel exmList exmDel exmAddM exmDecide jexList jexSave jexDel jexLoad jpcSave jamRes jamAgg insList insView insDel insReview rptAtt rptGr stuCard classCard anaData clsRoster';
+  const common = 'me myPass tordSave qsearch', edu = 'liveStatus absList absSet absPenaltySave gradeStatus gpcList gpcDecide galList facList facDel exmList exmDel exmAddM exmDecide jexList jexSave jsubSave jexDel jexLoad jpcSave jamRes jamAgg insList insView insDel insReview rptAtt rptGr stuCard classCard anaData clsRoster';
   const info = 'classAdd classEdit classDel userAdd userEdit userDel stuStatus userReset userResetAll clsRoster schSave coefSave setSave';
   const pro = 'dscList dscTypeAdd dscTypeDel dapList dapReview dscVoid dscRescale dscCfgSave dscAdd dscDel dscEdit csiList csiGet cnsList ptaList ptaSave ptaDel ptaRoster ptaAbs ptaMark pvrList pvrReview pvrAdd pvrDel stuCard classCard clsRoster';
   const exe = 'feeBoard feeAdd feeStuSave feeReview feeCfgSave feeView feeDel feeEdit linkList linkSave smsInfo smsCfgSave smsToday smsTest algList stfList stfDay stfDaySave stfAdd stfEdit stfDel bannerSave phoGet clsRoster';
@@ -8880,7 +8960,7 @@ function actions_() {
       userAdd:{ fn:userAdd_, w:1 }, userEdit:{ fn:userEdit_, w:1 }, userDel:{ fn:userDel_, w:1 }, stuStatus:{ fn:stuStatus_, w:1 }, clsRoster:{ fn:clsRoster_ },
       userReset:{ fn:userReset_, w:1 }, userResetAll:{ fn:userResetAll_, w:1 }, userPasses:{ fn:userPasses_ },
       dscList:{ fn:dscList_ }, dscTypeAdd:{ fn:dscTypeAdd_, w:1 }, dscTypeDel:{ fn:dscTypeDel_, w:1 }, dapList:{ fn:dapList_ }, dapReview:{ fn:dapReview_, w:1 }, dscVoid:{ fn:dscVoid_, w:1 }, dscRescale:{ fn:dscRescale_, w:1 }, dscCfgSave:{ fn:dscCfgSave_, w:1 }, dscAdd:{ fn:dscAdd_, w:1 }, dscDel:{ fn:dscDel_, w:1 }, dscEdit:{ fn:dscEdit_, w:1 }, impStart:{ fn:impStart_ }, absList:{ fn:absList_ }, absSet:{ fn:absSet_, w:1 }, absPenaltySave:{ fn:absPenaltySave_, w:1 }, gradeStatus:{ fn:gradeStatus_ }, gpcList:{ fn:gpcList_ }, galList:{ fn:galList_ }, facList:{ fn:facList_ }, facDel:{ fn:facDel_, w:1 }, gpcDecide:{ fn:gpcDecide_, w:1 }, orgSave:{ fn:orgSave_, w:1 }, liveStatus:{ fn:liveStatus_ }, exmList:{ fn:exmList_ }, exmDel:{ fn:exmDel_, w:1 }, exmAddM:{ fn:exmAddM_, w:1 }, 
-      jexList:{ fn:jexList_ }, jexSave:{ fn:jexSave_, w:1 }, jexDel:{ fn:jexDel_, w:1 }, jexLoad:{ fn:jexLoad_ }, jpcSave:{ fn:jpcSave_, w:1 }, brandSave:{ fn:brandSave_, w:1 }, tordSave:{ fn:tordSave_, w:1 }, csiList:{ fn:csiList_ }, csiGet:{ fn:csiGet_ }, cnsList:{ fn:cnsList_ }, jamRes:{ fn:jamRes_ }, jamAgg:{ fn:jamAgg_ }, insList:{ fn:insList_ }, insView:{ fn:insView_ }, insDel:{ fn:insDel_, w:1 }, insReview:{ fn:insReview_, w:1 }, ptaList:{ fn:ptaList_ }, ptaSave:{ fn:ptaSave_, w:1 }, ptaDel:{ fn:ptaDel_, w:1 }, ptaRoster:{ fn:ptaRoster_ }, ptaAbs:{ fn:ptaAbs_ }, homeSave:{ fn:homeSave_, w:1 }, ptaMark:{ fn:ptaMark_, w:1 }, pvrList:{ fn:pvrList_ }, pvrReview:{ fn:pvrReview_, w:1 }, pvrAdd:{ fn:pvrAdd_, w:1 }, pvrDel:{ fn:pvrDel_, w:1 }, smsInfo:{ fn:smsInfo_ }, smsCfgSave:{ fn:smsCfgSave_, w:1 }, smsToday:{ fn:smsToday_, w:1 }, smsTest:{ fn:smsTest_, w:1 }, exmDecide:{ fn:exmDecide_, w:1 }, qsearch:{ fn:qsearch_ }, feeBoard:{ fn:feeBoard_ }, feeAdd:{ fn:feeAdd_, w:1 }, linkList:{ fn:linkList_ }, linkSave:{ fn:linkSave_, w:1 }, feeStuSave:{ fn:feeStuSave_, w:1 }, feeReview:{ fn:feeReview_, w:1 }, feeCfgSave:{ fn:feeCfgSave_, w:1 }, feeView:{ fn:feeView_ }, feeDel:{ fn:feeDel_, w:1 }, feeEdit:{ fn:feeEdit_, w:1 }, algList:{ fn:algList_ }, stfList:{ fn:stfList_ }, stfDay:{ fn:stfDay_ }, stfDaySave:{ fn:stfDaySave_, w:1 }, stfAdd:{ fn:stfAdd_, w:1 }, stfEdit:{ fn:stfEdit_, w:1 }, stfDel:{ fn:stfDel_, w:1 },
+      jexList:{ fn:jexList_ }, jexSave:{ fn:jexSave_, w:1 }, jsubSave:{ fn:jsubSave_, w:1 }, jexDel:{ fn:jexDel_, w:1 }, jexLoad:{ fn:jexLoad_ }, jpcSave:{ fn:jpcSave_, w:1 }, brandSave:{ fn:brandSave_, w:1 }, tordSave:{ fn:tordSave_, w:1 }, csiList:{ fn:csiList_ }, csiGet:{ fn:csiGet_ }, cnsList:{ fn:cnsList_ }, jamRes:{ fn:jamRes_ }, jamAgg:{ fn:jamAgg_ }, insList:{ fn:insList_ }, insView:{ fn:insView_ }, insDel:{ fn:insDel_, w:1 }, insReview:{ fn:insReview_, w:1 }, ptaList:{ fn:ptaList_ }, ptaSave:{ fn:ptaSave_, w:1 }, ptaDel:{ fn:ptaDel_, w:1 }, ptaRoster:{ fn:ptaRoster_ }, ptaAbs:{ fn:ptaAbs_ }, homeSave:{ fn:homeSave_, w:1 }, ptaMark:{ fn:ptaMark_, w:1 }, pvrList:{ fn:pvrList_ }, pvrReview:{ fn:pvrReview_, w:1 }, pvrAdd:{ fn:pvrAdd_, w:1 }, pvrDel:{ fn:pvrDel_, w:1 }, smsInfo:{ fn:smsInfo_ }, smsCfgSave:{ fn:smsCfgSave_, w:1 }, smsToday:{ fn:smsToday_, w:1 }, smsTest:{ fn:smsTest_, w:1 }, exmDecide:{ fn:exmDecide_, w:1 }, qsearch:{ fn:qsearch_ }, feeBoard:{ fn:feeBoard_ }, feeAdd:{ fn:feeAdd_, w:1 }, linkList:{ fn:linkList_ }, linkSave:{ fn:linkSave_, w:1 }, feeStuSave:{ fn:feeStuSave_, w:1 }, feeReview:{ fn:feeReview_, w:1 }, feeCfgSave:{ fn:feeCfgSave_, w:1 }, feeView:{ fn:feeView_ }, feeDel:{ fn:feeDel_, w:1 }, feeEdit:{ fn:feeEdit_, w:1 }, algList:{ fn:algList_ }, stfList:{ fn:stfList_ }, stfDay:{ fn:stfDay_ }, stfDaySave:{ fn:stfDaySave_, w:1 }, stfAdd:{ fn:stfAdd_, w:1 }, stfEdit:{ fn:stfEdit_, w:1 }, stfDel:{ fn:stfDel_, w:1 },
       phoSave:{ fn:phoSave_, w:1 }, phoDel:{ fn:phoDel_, w:1 }, phoGet:{ fn:phoGetA_ }, bannerSave:{ fn:bannerSave_, w:1 }, volInfo:{ fn:volInfo_ }, offMeta:{ fn:offMeta_ }, offSheet:{ fn:offSheet_ }, offHtml:{ fn:offHtml_ }, rollPreview:{ fn:rollPreview_ }, rollRun:{ fn:rollRun_, w:1 },
       schSave:{ fn:schSave_, w:1 }, coefSave:{ fn:coefSave_, w:1 }, setSave:{ fn:setSave_, w:1 },
       rptAtt:{ fn:rptAtt_ }, rptGr:{ fn:rptGr_ }, stuCard:{ fn:stuCard_ }, classCard:{ fn:classCard_ }, anaData:{ fn:anaData_ }
