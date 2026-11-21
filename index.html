@@ -556,7 +556,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .calbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .dpk{position:relative;display:inline-block;min-width:200px}.dpk .dpb{width:100%;text-align:start;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--input);border:1px solid var(--line);border-radius:12px;padding:8px 12px;color:var(--ink);font:inherit;cursor:pointer;min-height:44px}
 .dpk .dpb::after{content:"▾";flex:none;opacity:.6;font-size:14px}
-.dpp{position:absolute;z-index:60;inset-inline-start:0;top:calc(100% + 6px);width:300px;max-width:calc(100vw - 32px);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px -12px rgba(15,23,42,.45);padding:10px}
+.dpp{position:fixed;z-index:9500;inset-inline-start:0;top:calc(100% + 6px);width:300px;max-width:calc(100vw - 32px);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px -12px rgba(15,23,42,.45);padding:10px}
 .dpn{display:flex;align-items:center;gap:6px;margin-bottom:8px}.dpn select{flex:1;min-width:0;padding:6px 8px;min-height:36px}.dpn button{width:36px;height:36px;border:1px solid var(--line);background:var(--input);color:var(--ink);border-radius:10px;cursor:pointer;font-size:16px;flex:none}
 .dpg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}.dpg i{font-style:normal;font-size:12px;color:var(--muted);padding:4px 0}.dpg i.fri{color:var(--bad)}
 .dpd{border:1px solid transparent;background:none;color:var(--ink);border-radius:10px;height:36px;cursor:pointer;font:inherit}.dpd:hover{background:var(--input)}.dpd.fri{color:var(--bad)}.dpd.td{border-color:var(--primary)}.dpd.sel{background:var(--primary);color:var(--on-primary);font-weight:700}
@@ -635,28 +635,28 @@ html{scroll-padding-top:calc(var(--stk,0px) + var(--hh,84px) + 8px)}
 .brand img{flex:none}
 .brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tact{display:flex;align-items:center;gap:8px;flex:none}
-.top .homebtn{width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.35);box-shadow:0 6px 14px -8px rgba(0,0,0,.6)}
+.top .homebtn{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.35);box-shadow:0 6px 14px -8px rgba(0,0,0,.6)}
 .mback .homebtn{display:none}
 @media(max-width:760px){.who .nm,.who .role{display:none}}
 @media(max-width:560px){
   .top .wrap{flex-wrap:wrap;gap:6px 8px;min-height:0;padding-top:8px;padding-bottom:8px}
-  .brand{flex:1 1 100%}
+  .brand{flex:1 1 0;min-width:0}
   .brand img{width:38px;height:38px}
   .brand b{font-size:14px}
   .tact{flex:1 1 100%;justify-content:flex-end}
-  .top .homebtn{margin-inline-end:auto}
   .top .btn.sm{min-height:40px;min-width:40px}
 }
 @media(min-width:900px){.tabs.side{top:calc(var(--stk,0px) + var(--hh,84px) + 12px)}}
 @media print{.top{position:static}}
+.dupt{display:none!important}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap">
+    <button class="homebtn" id="topHome" type="button" hidden title="صفحه‌ی اصلی" aria-label="بازگشت به صفحه‌ی اصلی"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></svg></button>
     <div class="brand"><img id="brandIcon" alt=""><div><b id="schoolName">سامانه مدرسه</b><span id="brandApp">مدرسه‌یار</span></div></div>
     <div class="tact">
-    <button class="homebtn" id="topHome" type="button" hidden title="صفحه‌ی اصلی" aria-label="بازگشت به صفحه‌ی اصلی"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></svg></button>
     <button class="btn sm" id="uiBtn" type="button" aria-label="ظاهر برنامه" title="ظاهر برنامه (تم و اندازه‌ی متن)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18" fill="currentColor"/></svg></button>
     <button class="btn sm" id="qsBtn" type="button" hidden aria-label="جست‌وجوی دانش‌آموز" title="جست‌وجوی دانش‌آموز"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="btn sm" id="installBtn" hidden>نصب اپ</button>
@@ -1031,7 +1031,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.67';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.68';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -1269,22 +1269,26 @@ const homeBtn = id => `<button class="homebtn" id="${id}" type="button" title="�
 const navIco = (k, z) => NAV_ICO[k] ? `<svg viewBox="0 0 24 24" width="${z || 20}" height="${z || 20}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${NAV_ICO[k]}</svg>` : '';
 /* دکمه‌ی خانه‌ی سربرگ: به دکمه‌ی خانه‌ی ماژولِ باز وصل است و فقط داخل ماژول دیده می‌شود؛ ارتفاع سربرگ (و نوارهای بالایی) را هم برای چسبیدن زیر هم می‌سنجد */
 (function () {
-  const th = document.getElementById('topHome'), top = document.querySelector('header.top'), app0 = document.getElementById('app'), root = document.documentElement;
+  const who0 = document.getElementById('who'), th = document.getElementById('topHome'), top = document.querySelector('header.top'), app0 = document.getElementById('app'), root = document.documentElement;
   if (!th || !top || !app0) return;
   let raf = 0; const seen = new Set();
   const cur = () => app0.querySelector('.mback:not([hidden]) .homebtn');
   const sync = () => {
     raf = 0;
-    th.hidden = !cur() || document.body.classList.contains('splash');
+    app0.querySelectorAll('.dupt').forEach(e => e.classList.remove('dupt'));     // عنوان ماژول فقط یک‌بار (در نوار بالای ماژول) نوشته می‌شود
+    const mb = app0.querySelector('.mback:not([hidden]) b'), nz = t => String(t || '').replace(/[\u200c\u200b\s]+/g, '').replace(/ي/g, 'ی').replace(/ك/g, 'ک');
+    if (mb && nz(mb.textContent)) app0.querySelectorAll('h2,h3').forEach(h => { if (!mb.contains(h) && nz(h.textContent) === nz(mb.textContent)) h.classList.add('dupt'); });
+    th.hidden = !who0 || who0.hidden || document.body.classList.contains('splash');
     let off = 0;
     ['offBar', 'impBar'].forEach(i => { const e = document.getElementById(i); if (e) { off += e.offsetHeight; if (window.ResizeObserver && !seen.has(e)) { seen.add(e); new ResizeObserver(q).observe(e); } } });
     root.style.setProperty('--stk', off + 'px');
     root.style.setProperty('--hh', top.offsetHeight + 'px');
   };
   const q = () => { if (!raf) raf = requestAnimationFrame(sync); };
-  th.onclick = () => { const b = cur(); if (b) { b.click(); window.scrollTo(0, 0); } };
+  th.onclick = () => { const b = cur(); if (b) b.click(); window.scrollTo({ top:0, behavior:b ? 'auto' : 'smooth' }); };
   new MutationObserver(q).observe(app0, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] });
   new MutationObserver(q).observe(document.body, { childList:true, attributes:true, attributeFilter:['class'] });
+  if (who0) new MutationObserver(q).observe(who0, { attributes:true, attributeFilter:['hidden'] });
   if (window.ResizeObserver) new ResizeObserver(q).observe(top);
   addEventListener('resize', q); sync();
 })();
@@ -2379,7 +2383,7 @@ const HOME_KEYS = {                              // همه‌ی ماژول‌ه�
 };
 const HOME_ROLE_FA = [['manager', 'مدیر'], ['teacher', 'دبیر'], ['student', 'دانش‌آموز'], ['counselor', 'مشاور']];
 const HOME_SUB = {
-  manager:{ scl:'نام مدرسه، نوبت‌ها و هویت برنامه', mgr:'مدیر، معاونان و مشاور', cls:'تعریف کلاس‌ها', crs:'تعریف دروس و ضرایب', sch:'شیفت، زنگ‌ها و برنامه‌ی کلاس‌ها', org:'نمودار سازمانی', day:'وضعیت ثبت حضور زنگ‌ها', hcf:'نوارها و چیدمان', dlo:'فایل بدون اینترنت', fee:'شهریه و پرداخت‌ها', lnk:'سایت‌ها و پیوندهای سریع', sms:'پیام به اولیا', set:'حجم داده‌ها و ارتقای سال', ver:'تازه‌های برنامه', ban:'پیام و عکس مناسبتی', tch:'دبیران و ابلاغ', stu:'اطلاعات و وضعیت', alg:'ورود و فعالیت کاربران', stf:'حضور کارکنان', att:'غیبت و تأخیر', evl:'نمره، کارنامه و رتبه', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', ana:'نقاط ضعف و قوت', dsc:'موارد انضباطی', cns:'جلسات مشاوره', pta:'جلسات و والدین غایب' },
+  manager:{ scl:'نام مدرسه، نوبت‌ها و هویت برنامه', mgr:'مدیر، معاونان و مشاور', cls:'تعریف کلاس‌ها', crs:'تعریف دروس و ضرایب', sch:'شیفت، زنگ‌ها و برنامه‌ی کلاس‌ها', org:'نمودار سازمانی', day:'برنامه‌ی هر روز بر پایه‌ی تاریخ', hcf:'نوارها و چیدمان', dlo:'فایل بدون اینترنت', fee:'شهریه و پرداخت‌ها', lnk:'سایت‌ها و پیوندهای سریع', sms:'پیام به اولیا', set:'حجم داده‌ها و ارتقای سال', ver:'تازه‌های برنامه', ban:'پیام و عکس مناسبتی', tch:'دبیران و ابلاغ', stu:'اطلاعات و وضعیت', alg:'ورود و فعالیت کاربران', stf:'حضور کارکنان', att:'غیبت و تأخیر', evl:'نمره، کارنامه و رتبه', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', ana:'نقاط ضعف و قوت', dsc:'موارد انضباطی', cns:'جلسات مشاوره', pta:'جلسات و والدین غایب' },
   teacher:{ att:'غیبت و تأخیر کلاس', gr:'ثبت و ویرایش', fac:'فعالیت‌های کلاسی', exm:'برنامه‌ی امتحانات', jam:'نتایج آزمون‌ها', ana:'نقاط ضعف و قوت', rpt:'گزارش کلاس‌ها', off:'بدون اینترنت', pw:'رمز ورود' },
   student:{ ntf:'پیام‌های مدرسه', att:'غیبت و تأخیر', gr:'نمره‌ی درس‌ها', card:'کارنامه‌ی من', rank:'رتبه در کلاس', ana:'نقاط ضعف و قوت', jam:'نتایج آزمون‌ها', exm:'برنامه‌ی امتحانات', plan:'برنامه‌ی هفتگی', fee:'شهریه و پرداخت‌ها', csi:'از مشاور', fac:'فعالیت‌های کلاسی', off:'بدون اینترنت', pw:'رمز ورود' },
   counselor:{ ses:'ثبت جلسه', rpt:'سوابق جلسات', inf:'اطلاعات دانش‌آموز', ins:'نتایج آزمون‌ها', fil:'پرونده', off:'بدون اینترنت', pw:'رمز ورود' }
@@ -2409,7 +2413,7 @@ function tileHome(el, title, sub, tiles, go, role, st) {
 const SECTS = [['inf', 'اطلاعات مدرسه', ['scl', 'mgr', 'cls', 'tch', 'stu', 'crs', 'sch', 'org']], ['edu', 'خدمات آموزشی', ['day', 'att', 'evl', 'jam', 'exm', 'ana']], ['pro', 'خدمات پرورشی و مشاوره', ['dsc', 'cns', 'pta', 'ban']], ['exe', 'خدمات اجرایی و ابزار', ['stf', 'fee', 'sms', 'alg', 'ver', 'dlo', 'hcf', 'set']], ['lkb', 'پیوند ها', ['lnk']]];
 const MODS = {                                   // کلید: [عنوان، آیکن، رنگ، تابع نمایش]
   ana:['تحلیل آزمون‌ها', 'ana', '#22d3ee,#0891b2', el => mAna(el)],
-  day:['برنامه روز جاری', 'exm', '#60a5fa,#2563eb', el => mDay(el)], hcf:['ویرایش صفحه اصلی', 'plan', '#94a3b8,#475569', el => mHomeCfg(el)], dlo:['دانلود نسخه آفلاین', 'off', '#2dd4bf,#0d9488', el => mOffline(el)],
+  day:['نمایش برنامه', 'exm', '#60a5fa,#2563eb', el => mDay(el)], hcf:['ویرایش صفحه اصلی', 'plan', '#94a3b8,#475569', el => mHomeCfg(el)], dlo:['دانلود نسخه آفلاین', 'off', '#2dd4bf,#0d9488', el => mOffline(el)],
   pta:['جلسات با والدین', 'pta', '#818cf8,#4338ca', el => mPta(el)], sms:['پیامک اولیا', 'sms', '#2dd4bf,#0f766e', el => mSms(el)],
   fee:['پرداخت شهریه', 'fee', '#34d399,#059669', el => mFee(el)],
   set:['تنظیمات', 'set', '#a1a1aa,#52525b', el => mSetGrp(el)], tch:['دبیران', 'tch', '#4ade80,#15803d', el => mTeachers(el)],
@@ -2616,7 +2620,7 @@ function mGroup(el, key, subs) {           // زبانه‌ی اصلی با چن
   $('.sg', el).replaceWith(seg2(subs.map(s => [s[0], s[1]]), MSUB[key], show));
   show(MSUB[key]);
 }
-const mAttGrp = el => mGroup(el, 'att', [['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]);
+const mAttGrp = el => mGroup(el, 'att', [['lv', 'وضعیت حضور و غیاب', mAttLive], ['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]);
 const mDiscGrp = el => mGroup(el, 'dsc', [['add', 'ثبت و سوابق انضباط', mDisc], ['apl', 'درخواست‌های حذف نمره', mDap], ['drp', 'نمره‌ی انضباط دانش‌آموزان', mDiscRpt], ['cfg', 'تنظیم نمره‌های منفی', mDscCfg]]);
 function mHomeCfg(el) {                          // تنظیمات ← صفحه‌ی اصلی: نام نوارها، رنگ، جای هر ماژول و ترتیب برای هر نقش
   let role = 'manager', cfg = null;
@@ -3421,11 +3425,10 @@ async function mDisc(el) {
 /* --- وضعیت لحظه‌ای حضور و غیاب (فقط مدیر) --- */
 let LV_TIMER = null;
 let LV_DATE = '';
-async function mDay(el) {
+async function mLive(el, st) {                   // st = true: وضعیت حضور و غیاب (سبز انجام‌شده / قرمز انجام‌نشده)؛ st = false: نمایش برنامه‌ی روزِ تاریخ انتخابی
   clearInterval(LV_TIMER);
   LV_DATE = todayJ();
-  el.innerHTML = `<h2>برنامه روز جاری</h2>
-    <div class="filters"><div id="lvDate"></div><div class="row" style="gap:6px"><button class="btn sm" type="button" id="lvPrev">▶ روز قبل</button><button class="btn sm" type="button" id="lvNext">روز بعد ◀</button></div></div>
+  el.innerHTML = `    <div class="filters"><div id="lvDate"></div><div class="row" style="gap:6px"><button class="btn sm" type="button" id="lvPrev">▶ روز قبل</button><button class="btn sm" type="button" id="lvNext">روز بعد ◀</button></div></div>
     <div id="lvOut">${loadingHtml}</div>`;
   const bar = () => calBar($('#lvDate'), LV_DATE, v => { LV_DATE = v; clearInterval(LV_TIMER); go(); });
   const step = n => { LV_DATE = jAdd(LV_DATE, n); bar(); clearInterval(LV_TIMER); go(); };
@@ -3439,11 +3442,11 @@ async function mDay(el) {
     const cls = d.classes.filter(c => d.items.some(x => norm(x.cls) === norm(c)));
     const cell = (c, p) => {
       const xs = d.items.filter(x => norm(x.cls) === norm(c) && x.period === p);
-      return xs.length ? xs.map(x => `<div class="lvc ${x.state}"><b>${esc(x.course)}</b><span>${esc(x.teacherName)}</span><small>${x.start ? esc(x.start) + ' تا ' + esc(x.end) : ''}</small>${x.state === 'late' ? `<button class="btn sm" type="button" data-lv="${d.items.indexOf(x)}">ثبت به‌جای دبیر</button>` : ''}</div>`).join('') : '<span class="muted small">—</span>';
+      return xs.length ? xs.map(x => `<div class="lvc${st ? ' ' + x.state : ''}"><b>${esc(x.course)}</b><span>${esc(x.teacherName)}</span><small>${x.start ? esc(x.start) + ' تا ' + esc(x.end) : ''}</small>${st && x.state === 'late' ? `<button class="btn sm" type="button" data-lv="${d.items.indexOf(x)}">ثبت به‌جای دبیر</button>` : ''}</div>`).join('') : '<span class="muted small">—</span>';
     };
     const ps = Array.from({ length:d.periods }, (_, i) => i + 1);
-    $('#lvOut').innerHTML = `<p class="muted small">${esc(d.day)} ${esc(d.date)}${d.isToday ? ' · ساعت ' + esc(d.now) + ' · به‌روزرسانی خودکار هر یک دقیقه' : d.isFuture ? ' · روز آینده (برنامه‌ی هفتگی)' : ' · روز گذشته'} · هفته‌ی ${esc(d.parity)}</p>
-      ${kpis([[cnt('done'), 'انجام شده', 'ok'], [cnt('late'), d.isToday ? 'انجام‌نشده (دیرکرد)' : 'ثبت‌نشده', cnt('late') ? 'bad' : 'ok'], [cnt('wait'), 'در انتظار']])}
+    $('#lvOut').innerHTML = `<p class="muted small">${esc(d.day)} ${esc(d.date)}${st ? (d.isToday ? ' · ساعت ' + esc(d.now) + ' · به‌روزرسانی خودکار هر یک دقیقه' : d.isFuture ? ' · روز آینده (برنامه‌ی هفتگی)' : ' · روز گذشته') : (d.isToday ? ' · امروز' : '')} · هفته‌ی ${esc(d.parity)}${st ? '' : ' · ' + nf(d.items.length) + ' زنگ'}</p>
+      ${st ? kpis([[cnt('done'), 'انجام شده', 'ok'], [cnt('late'), d.isToday ? 'انجام‌نشده (دیرکرد)' : 'ثبت‌نشده', cnt('late') ? 'bad' : 'ok'], [cnt('wait'), 'در انتظار']]) + '<p class="muted small" style="margin-top:8px">سبز: حضور و غیاب آن زنگ ثبت شده · قرمز: ساعت زنگ گذشته و ثبت نشده · بدون رنگ: هنوز نوبت زنگ نشده.</p>' : ''}
       <div class="scroll" style="margin-top:12px"><table class="tbl lvt"><thead><tr><th>کلاس</th>${ps.map(p => `<th>زنگ ${nf(p)}</th>`).join('')}</tr></thead><tbody>
       ${cls.map(c => `<tr><td><b>${esc(c)}</b></td>${ps.map(p => `<td>${cell(c, p)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     $('#lvOut').onclick = async e => {
@@ -3454,9 +3457,11 @@ async function mDay(el) {
       impEnter('teacher', { code:x.teacher }, b);
     };
   };
-  const go = () => { load(); if (LV_DATE === todayJ()) LV_TIMER = setInterval(load, 60000); };
+  const go = () => { load(); if (st && LV_DATE === todayJ()) LV_TIMER = setInterval(load, 60000); };
   bar(); go();
 }
+const mDay = el => mLive(el, false);              // ماژول «نمایش برنامه»
+const mAttLive = el => mLive(el, true);          // زبانه‌ی «وضعیت حضور و غیاب» در ماژول حضور و غیاب
 /* --- تقویم آزمون و امتحانات (مدیر، دبیر، دانش‌آموز): سه بخش کاشی‌ای --- */
 const EXM_DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
 const EXK = [['exm', 'امتحان کلاسی', 'class', '#38bdf8,#0284c7'], ['jam', 'آزمون‌های آزمایشی', 'jam', '#fbbf24,#f59e0b'], ['gr', 'امتحانات ترم', 'term', '#fb7185,#e11d48']];   // [آیکن، عنوان، نوع، رنگ]
@@ -3734,19 +3739,27 @@ function dpOpen(host) {
     else if (e.target.closest('[data-x]')) { pop.remove(); $('.dpb', host).focus(); }
   };
   pop.onchange = e => { e.stopPropagation(); const s = e.target.closest('select'); if (!s) return; if (s.dataset.s === 'm') m = +s.value; else y = +s.value; draw(); };
-  draw(); host.appendChild(pop);
-  { const r = host.getBoundingClientRect(), w = Math.min(300, innerWidth - 32), hh = pop.offsetHeight || 330;   // نمایش ثابت و کامل روی صفحه، حتی داخل پنجره‌های کوچک
-    pop.style.position = 'fixed'; pop.style.insetInlineStart = 'auto'; pop.style.width = w + 'px';
-    pop.style.left = Math.max(16, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 16)) + 'px';
-    pop.style.top = Math.max(8, Math.min(r.bottom + 6, innerHeight - hh - 8)) + 'px'; }
+  draw(); pop._host = host;
+  (host.closest('dialog') || document.body).appendChild(pop);       // بیرون از کارت‌های شیشه‌ای (backdrop-filter مرجع position:fixed را عوض می‌کرد و تقویم دور از فیلد باز می‌شد)
+  const place = () => {
+    if (!pop.isConnected) { removeEventListener('resize', place); removeEventListener('scroll', place, true); return; }
+    const r = host.getBoundingClientRect(), w = Math.min(300, innerWidth - 32), hh = pop.offsetHeight || 330;
+    let left = Math.max(16, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 16)), top = r.bottom + 6;
+    if (top + hh > innerHeight - 8) top = r.top - hh - 6 >= 8 ? r.top - hh - 6 : Math.max(8, innerHeight - hh - 8);   // اگر جا نبود، بالای فیلد
+    pop.style.position = 'fixed'; pop.style.insetInlineStart = 'auto'; pop.style.insetInlineEnd = 'auto'; pop.style.width = w + 'px';
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+    const b = pop.getBoundingClientRect();                         // اگر نیای والد (مثلاً پنجره) مرجع را جابه‌جا کرده بود، جبران می‌شود
+    if (Math.abs(b.left - left) > 1 || Math.abs(b.top - top) > 1) { pop.style.left = (left - (b.left - left)) + 'px'; pop.style.top = (top - (b.top - top)) + 'px'; }
+  };
+  place(); addEventListener('resize', place); addEventListener('scroll', place, true);
   const t = $('.dpd.sel', pop) || $('.dpd.td', pop) || $('.dpd', pop); if (t) t.focus();
 }
 document.addEventListener('click', e => {
   const cx = e.target.closest('.dpx');
   if (cx) { const h = cx.parentElement; h.value = ''; h.dispatchEvent(new Event('change', { bubbles:true })); return; }
   const b = e.target.closest('.dpb'), open = document.querySelector('.dpp');
-  if (open && !(b && open.parentElement === b.parentElement)) open.remove();
-  if (b && !b.parentElement.querySelector('.dpp')) dpOpen(b.parentElement);
+  if (open && !(b && open._host === b.parentElement)) open.remove();
+  if (b && !(open && open._host === b.parentElement && open.isConnected)) dpOpen(b.parentElement);
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { const o = document.querySelector('.dpp'); if (o) { e.stopPropagation(); o.remove(); } } }, true);
 function jexDlg(x, done, type) {
@@ -5475,6 +5488,13 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.68', d:'۱۴۰۵/۰۸/۳۰', items:[
+    'آیکون «صفحه‌ی اصلی» همیشه در سربرگ و در سمت راستِ نشان مدرسه قرار دارد (در صفحه‌ی اصلی، با زدن آن صفحه به بالا برمی‌گردد).',
+    'نام ماژول در ماژول‌هایی که دوبار نوشته می‌شد، فقط یک‌بار (در نوار بالای ماژول) نمایش داده می‌شود.',
+    'ماژول حضور و غیاب دانش‌آموزان ← زبانه‌ی جدید «وضعیت حضور و غیاب»: جدول برنامه‌ی روز، با رنگ سبز برای زنگ‌هایی که حضور و غیابشان انجام شده و قرمز برای زنگ‌هایی که ساعتشان گذشته و ثبت نشده است.',
+    '«برنامه روز جاری» به «نمایش برنامه» تغییر نام یافت و برنامه‌ی روزِ تاریخ انتخاب‌شده را (با توجه به هفته‌ی زوج/فرد) نشان می‌دهد.',
+    'تقویم انتخاب تاریخ دقیقاً کنار فیلد تاریخ باز می‌شود (پیش‌تر در بعضی صفحه‌ها دور از فیلد ظاهر می‌شد).',
+  ] },
   { v:'v5.67', d:'۱۴۰۵/۰۸/۳۰', items:[
     'آزمون‌های آزمایشی ← ورود نتایج: دکمه‌ی «ویرایش دروس آزمون» اضافه شد؛ مدیر می‌تواند برای هر آزمون و هر رشته درس اضافه یا حذف کند و نام و ضریب درس‌ها را تغییر دهد. نتایج، رتبه‌ها و نتایج تجمیعی بر پایه‌ی همین دروس محاسبه می‌شود.',
     'با تغییر نام یک درس، نمره‌های ثبت‌شده‌ی آن حفظ می‌شود؛ حذف درس نمره‌های آن را پاک می‌کند. «بازگشت به دروس پیش‌فرض» فهرست اصلی رشته را برمی‌گرداند.',
@@ -5492,11 +5512,6 @@ const CHANGELOG = [
     'عوامل مدرسه: علاوه بر مدیر، معاون آموزشی، معاون پرورشی و معاون اجرایی تعریف می‌شوند. صفحه‌ی ورود بخش جداگانه‌ی «معاونان» دارد و هر معاون فقط به ماژول‌های حوزه‌ی خودش دسترسی دارد (کنترل در سرور هم انجام می‌شود).',
     'کلاس: پایه‌های هفتم، هشتم و نهم و رشته‌های «فنی و حرفه‌ای»، «کاردانش» و «عمومی» از فهرست‌ها حذف شد.',
     'برنامه هفتگی: «شیفت مدرسه» ابتدا ثابت یا چرخشی بودن را می‌پرسد؛ در حالت ثابت صبح یا عصر و در حالت چرخشی شیفتِ هفته‌ی جاری را می‌گیرد و شیفت بقیه‌ی هفته‌ها را خودش تعیین می‌کند. فهرست شیفت در تعریف کلاس هم بر همین اساس محدود می‌شود. فهرست «تعداد زنگ» تا ۴ است.',
-  ] },
-  { v:'v5.63', d:'۱۴۰۵/۰۸/۲۸', items:[
-    'صفحه‌ی اصلی مدیر: نوار جدید «اطلاعات مدرسه» با این ماژول‌ها ساخته شد: مدرسه (نام مدرسه، نوبت‌ها و هویت برنامه)، مدیر مدرسه (تعریف مدیر و مشاور)، کلاس، دبیران، دانش‌آموزان، دروس، برنامه هفتگی و چارت مدرسه.',
-    'برنامه هفتگی: به ترتیب «شیفت مدرسه» (قبلاً هفته‌ی فرد و زوج)، «تعداد زنگ‌ها»، «ساعت زنگ‌ها» و سپس برنامه‌ی کلاس‌ها در یک ماژول آمد.',
-    'ماژول «تنظیمات» فقط «حجم داده‌ها» و «ارتقای سال» را دارد؛ تب‌های عمومی، کلاس، برنامه هفتگی، چارت مدرسه و دروس به ماژول مستقل رفتند. دبیران و دانش‌آموزان از نوار «خدمات اداری» به نوار تازه منتقل شدند (در چیدمان‌های سفارشی‌شده ممکن است ماژول‌های تازه در آخرین نوار باشند).',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5788,7 +5803,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.67';
+const VERSION = 'v5.68';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
