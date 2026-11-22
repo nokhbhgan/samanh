@@ -1031,7 +1031,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.68';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.69';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -2553,7 +2553,7 @@ const optList = (list, sel, first) => `<option value="">${esc(first)}</option>` 
 const AR = { from:'', to:'' };
 async function rAttRange(el) {
   if (!AR.to) { AR.to = M.today; AR.from = M.today.slice(0, 8) + '01'; }
-  el.innerHTML = `<div class="filters"><div class="f"><span>از تاریخ</span>${dateSel('arF', AR.from)}</div><div class="f"><span>تا تاریخ</span>${dateSel('arT', AR.to)}</div></div>
+  el.innerHTML = `<div class="chips" id="arQ" style="margin-bottom:8px"></div><div class="filters"><div class="f"><span>از تاریخ</span>${dateSel('arF', AR.from)}</div><div class="f"><span>تا تاریخ</span>${dateSel('arT', AR.to)}</div></div>
     <div class="filters fb"></div><div id="rOut">${loadingHtml}</div>`;
   let cache = null;
   const days = v => nf(Math.round(v / 3 * 100) / 100);                     // هر سه زنگ غیبت = یک روز
@@ -2592,7 +2592,7 @@ async function rAttRange(el) {
     $('#mXls').onclick = () => csvExport('گزارش حضور و غیاب ' + AR.from + (one ? '' : ' تا ' + AR.to), ['کلاس', 'دانش‌آموز', 'غیبت (زنگ)', 'غیبت (روز)', 'موجه (زنگ)', 'غیرموجه (زنگ)', 'بررسی‌نشده (زنگ)', 'تأخیر'], rows.map(r => [r.cls, r.name, r.a, Math.round(r.a / 3 * 100) / 100, r.ok, r.bad, r.a - r.ok - r.bad, r.l]));
     $('#mPrint').onclick = () => printTable('گزارش حضور و غیاب ' + AR.from + (one ? '' : ' تا ' + AR.to) + (MR.code && rows[0] ? ' · ' + rows[0].name : MR.cls ? ' · کلاس ' + MR.cls : MR.grade ? ' · پایه ' + MR.grade : '') + (MR.course ? ' · ' + MR.course : ''), ['کلاس', 'دانش‌آموز', 'غیبت (زنگ)', 'غیبت (روز)', 'موجه (زنگ)', 'غیرموجه (زنگ)', 'بررسی‌نشده (زنگ)', 'تأخیر'], rows.map(r => [r.cls, r.name, r.a, Math.round(r.a / 3 * 100) / 100, r.ok, r.bad, r.a - r.ok - r.bad, r.l]));
   };
-  const load = async () => {
+  let load = async () => {
     $('#rOut').innerHTML = loadingHtml;
     try { cache = await api('rptAtt', { from:AR.from, to:AR.to, grade:MR.grade, cls:MR.cls }); } catch (e) { $('#rOut').innerHTML = `<p class="note warn">${esc(e.message)}</p>`; return; }
     draw();
@@ -2600,6 +2600,11 @@ async function rAttRange(el) {
   const fix = (id, v) => { const h = $('#' + id); h.dataset.v = v; $('.dpb', h).textContent = dpLabel(v); };
   $('#arF').onchange = () => { AR.from = dateSelVal('arF'); if (AR.from > AR.to) { AR.to = AR.from; fix('arT', AR.to); } load(); };
   $('#arT').onchange = () => { AR.to = dateSelVal('arT'); if (AR.to < AR.from) { AR.from = AR.to; fix('arF', AR.from); } load(); };
+  const TM = ((M.settings && M.settings.terms) || []).filter(t => t.from && t.to), TN = ['اول', 'دوم', 'سوم', 'چهارم'];
+  const quick = TM.map((t, i) => ({ n:'ترم ' + TN[i], from:t.from, to:t.to })).concat(TM.length ? [{ n:'کل سال', from:TM[0].from, to:TM[TM.length - 1].to }] : []);
+  const paintQ = () => { $('#arQ').innerHTML = quick.map((c, i) => `<button type="button" class="chip ${AR.from === c.from && AR.to === c.to ? 'on' : ''}" data-i="${i}">${esc(c.n)}</button>`).join(''); };
+  $('#arQ').onclick = e => { const b = e.target.closest('[data-i]'), c = b && quick[+b.dataset.i]; if (!c) return; AR.from = c.from; AR.to = c.to; fix('arF', AR.from); fix('arT', AR.to); load(); };
+  const load0 = load; load = async () => { paintQ(); return load0(); };
   let last = MR.grade + '|' + MR.cls;
   filterBar($('.fb', el), { grade:1, cls:1, course:1, student:1 }, () => { const k = MR.grade + '|' + MR.cls; if (k !== last) { last = k; load(); } else if (cache) draw(); });
   load();
@@ -2620,7 +2625,7 @@ function mGroup(el, key, subs) {           // زبانه‌ی اصلی با چن
   $('.sg', el).replaceWith(seg2(subs.map(s => [s[0], s[1]]), MSUB[key], show));
   show(MSUB[key]);
 }
-const mAttGrp = el => mGroup(el, 'att', [['lv', 'وضعیت حضور و غیاب', mAttLive], ['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]);
+const mAttGrp = el => { MSUB.att = 'lv'; mGroup(el, 'att', [['lv', 'وضعیت حضور و غیاب', mAttLive], ['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]); };
 const mDiscGrp = el => mGroup(el, 'dsc', [['add', 'ثبت و سوابق انضباط', mDisc], ['apl', 'درخواست‌های حذف نمره', mDap], ['drp', 'نمره‌ی انضباط دانش‌آموزان', mDiscRpt], ['cfg', 'تنظیم نمره‌های منفی', mDscCfg]]);
 function mHomeCfg(el) {                          // تنظیمات ← صفحه‌ی اصلی: نام نوارها، رنگ، جای هر ماژول و ترتیب برای هر نقش
   let role = 'manager', cfg = null;
@@ -3442,17 +3447,17 @@ async function mLive(el, st) {                   // st = true: وضعیت حضو
     const cls = d.classes.filter(c => d.items.some(x => norm(x.cls) === norm(c)));
     const cell = (c, p) => {
       const xs = d.items.filter(x => norm(x.cls) === norm(c) && x.period === p);
-      return xs.length ? xs.map(x => `<div class="lvc${st ? ' ' + x.state : ''}"><b>${esc(x.course)}</b><span>${esc(x.teacherName)}</span><small>${x.start ? esc(x.start) + ' تا ' + esc(x.end) : ''}</small>${st && x.state === 'late' ? `<button class="btn sm" type="button" data-lv="${d.items.indexOf(x)}">ثبت به‌جای دبیر</button>` : ''}</div>`).join('') : '<span class="muted small">—</span>';
+      return xs.length ? xs.map(x => `<div class="lvc${st ? ' ' + x.state : ''}"><b>${esc(x.course)}</b><span>${esc(x.teacherName)}</span><small>${x.start ? esc(x.start) + ' تا ' + esc(x.end) : ''}</small>${st && !d.isFuture ? `<button class="btn sm" type="button" data-lv="${d.items.indexOf(x)}">${x.state === 'done' ? 'مشاهده و ویرایش' : x.state === 'late' ? 'ثبت به‌جای دبیر' : 'ثبت حضور و غیاب'}</button>` : ''}</div>`).join('') : '<span class="muted small">—</span>';
     };
     const ps = Array.from({ length:d.periods }, (_, i) => i + 1);
     $('#lvOut').innerHTML = `<p class="muted small">${esc(d.day)} ${esc(d.date)}${st ? (d.isToday ? ' · ساعت ' + esc(d.now) + ' · به‌روزرسانی خودکار هر یک دقیقه' : d.isFuture ? ' · روز آینده (برنامه‌ی هفتگی)' : ' · روز گذشته') : (d.isToday ? ' · امروز' : '')} · هفته‌ی ${esc(d.parity)}${st ? '' : ' · ' + nf(d.items.length) + ' زنگ'}</p>
-      ${st ? kpis([[cnt('done'), 'انجام شده', 'ok'], [cnt('late'), d.isToday ? 'انجام‌نشده (دیرکرد)' : 'ثبت‌نشده', cnt('late') ? 'bad' : 'ok'], [cnt('wait'), 'در انتظار']]) + '<p class="muted small" style="margin-top:8px">سبز: حضور و غیاب آن زنگ ثبت شده · قرمز: ساعت زنگ گذشته و ثبت نشده · بدون رنگ: هنوز نوبت زنگ نشده.</p>' : ''}
+      ${st ? kpis([[cnt('done'), 'انجام شده', 'ok'], [cnt('late'), d.isToday ? 'انجام‌نشده (دیرکرد)' : 'ثبت‌نشده', cnt('late') ? 'bad' : 'ok'], [cnt('wait'), 'در انتظار']]) + '<p class="muted small" style="margin-top:8px">سبز: حضور و غیاب آن زنگ ثبت شده · قرمز: ساعت زنگ گذشته و ثبت نشده · بدون رنگ: هنوز نوبت زنگ نشده. با دکمه‌ی هر زنگ وارد پنل همان دبیر می‌شوید و حضور و غیاب را ثبت یا ویرایش می‌کنید.</p>' : ''}
       <div class="scroll" style="margin-top:12px"><table class="tbl lvt"><thead><tr><th>کلاس</th>${ps.map(p => `<th>زنگ ${nf(p)}</th>`).join('')}</tr></thead><tbody>
       ${cls.map(c => `<tr><td><b>${esc(c)}</b></td>${ps.map(p => `<td>${cell(c, p)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     $('#lvOut').onclick = async e => {
       const b = e.target.closest('[data-lv]'); if (!b) return;
       const x = d.items[+b.dataset.lv]; if (!x) return;
-      if (!(await askConfirm('پنل «' + x.teacherName + '» برای ثبت حضور و غیاب درس ' + x.course + ' کلاس ' + x.cls + ' باز شود؟ ثبت به نام همین دبیر انجام می‌شود.', 'باز کردن پنل'))) return;
+      if (!(await askConfirm('پنل «' + x.teacherName + '» برای ' + (x.state === 'done' ? 'مشاهده یا ویرایش' : 'ثبت') + ' حضور و غیاب درس ' + x.course + ' کلاس ' + x.cls + ' باز شود؟ ثبت به نام همین دبیر انجام می‌شود.', 'باز کردن پنل'))) return;
       T.pre = { cls:x.cls, course:x.course, date:d.date };
       impEnter('teacher', { code:x.teacher }, b);
     };
@@ -4037,6 +4042,20 @@ async function mFee(el) {
       $('#xGo', root).onclick = async e => { try { const r = await api('feeStuSave', { code:s.code, disc:$('#xD', root).value }, e.target); toast(r.message); $('#dlg').close(); refresh(r); } catch (err) { fail(err); } };
     });
   };
+  const rcpt = s => {                              // رسید پرداخت برای دانش‌آموزِ تسویه‌شده
+    const mine = D.pays.filter(x => x.code === s.code && x.status === 'تأیید').sort(byDateAsc);
+    printHtml(`<section class="pg wide">${printHead('رسید پرداخت شهریه', 'سال تحصیلی ' + ayLabel(M && M.settings))}
+      <table class="tbl"><tbody><tr><th>نام دانش‌آموز</th><td><b>${esc(s.name)}</b></td><th>کلاس</th><td>${esc(s.cls)}</td></tr>
+      <tr><th>کد دانش‌آموزی</th><td class="num">${esc(s.code)}</td><th>نوع شهریه</th><td>${esc(s.cat || '—')}</td></tr></tbody></table>
+      <h3 style="margin-top:14px">پرداخت‌های ثبت‌شده</h3>
+      <table class="tbl"><thead><tr><th>ردیف</th><th>بابت</th><th>تاریخ پرداخت</th><th>توضیح / شماره پیگیری</th><th>مبلغ (تومان)</th></tr></thead><tbody>
+      ${mine.map((x, i) => `<tr><td class="num">${nf(i + 1)}</td><td>${esc(x.instName || '—')}</td><td class="num">${esc(x.date)}</td><td>${esc(x.ref || '—')}</td><td class="num">${tn(x.amount)}</td></tr>`).join('') || '<tr><td colspan="5">—</td></tr>'}
+      </tbody><tfoot><tr><td colspan="4"><b>جمع پرداخت‌شده</b></td><td class="num"><b>${tn(s.paid)}</b></td></tr></tfoot></table>
+      <table class="tbl" style="margin-top:12px"><tbody>${s.disc ? `<tr><th>شهریه‌ی اصلی</th><td class="num">${tmn(s.base)}</td><th>تخفیف</th><td class="num">${tmn(s.disc)}</td></tr>` : ''}
+      <tr><th>شهریه‌ی نهایی</th><td class="num">${tmn(s.due)}</td><th>مانده</th><td class="num">${tmn(s.remaining)}</td></tr></tbody></table>
+      <p style="margin:14px 0;font-weight:700">وضعیت: شهریه‌ی این دانش‌آموز تسویه شده است.</p>
+      <div style="display:flex;justify-content:space-between;margin-top:34px"><span>مهر و امضای مدرسه</span><span>تاریخ: ${esc(todayJ())}</span></div></section>`);
+  };
   const view = () => {
     const B = $('#feB');
     if (tab === 'list') {
@@ -4056,7 +4075,7 @@ async function mFee(el) {
           <div class="feV"><small>تاریخ</small><b class="num">${esc(s.last || '—')}</b></div>
           <div class="feV"><small>مانده</small><b class="num">${tn(s.remaining)}</b></div>
           <span class="pill ${t.k}">${t.t}</span>
-          <div class="feB"><button class="btn sm primary" data-p="${esc(s.code)}" type="button">پرداخت</button><button class="btn sm" data-d="${esc(s.code)}" type="button">تخفیف</button></div></div>`; }).join('') || '<div class="empty">دانش‌آموزی با این فیلتر پیدا نشد.</div>'}</div>
+          <div class="feB"><button class="btn sm primary" data-p="${esc(s.code)}" type="button">پرداخت</button><button class="btn sm" data-d="${esc(s.code)}" type="button">تخفیف</button>${t.k === 'ok' && s.paid > 0 ? `<button class="btn sm" data-r="${esc(s.code)}" type="button">چاپ رسید</button>` : ''}</div></div>`; }).join('') || '<div class="empty">دانش‌آموزی با این فیلتر پیدا نشد.</div>'}</div>
         ${legacy.length ? `<h3 style="margin-top:16px">واریزهای قدیمیِ در انتظار بررسی</h3><div class="scroll"><table class="tbl stack"><thead><tr><th>دانش‌آموز</th><th>کلاس</th><th>مبلغ</th><th>تاریخ</th><th></th></tr></thead><tbody>${legacy.map(x => `<tr><td data-l="دانش‌آموز"><b>${esc(x.name)}</b></td><td data-l="کلاس">${esc(x.cls)}</td><td data-l="مبلغ" class="num">${tmn(x.amount)}</td><td data-l="تاریخ" class="num">${esc(x.date)}</td><td>${x.file ? `<button class="btn sm" data-v="${esc(x.id)}" type="button">رسید</button> ` : ''}<button class="btn sm primary" data-a="تأیید" data-i="${esc(x.id)}" type="button">تأیید</button> <button class="btn sm danger" data-a="رد" data-i="${esc(x.id)}" type="button">رد</button></td></tr>`).join('')}</tbody></table></div>` : ''}`;
       $('#feX').onclick = () => csvExport('شهریه', ['کلاس', 'دانش‌آموز', 'نوع شهریه', 'شهریه اصلی', 'تخفیف', 'شهریه نهایی', 'پرداخت‌شده', 'مانده', 'وضعیت'], l.map(x => [x.cls, x.name, x.cat, x.base, x.disc, x.due, x.paid, x.remaining, stOf(x).t]));
       const q = $('#fQ'); q.oninput = () => { f.q = q.value; const p = q.selectionStart; view(); const n = $('#fQ'); n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} };
@@ -4078,7 +4097,8 @@ async function mFee(el) {
     }
   };
   $('#feB').onclick = async e => {
-    const v = e.target.closest('[data-v]'), a = e.target.closest('[data-a]'), c = e.target.closest('[data-c]'), s = e.target.closest('[data-s]'), p = e.target.closest('[data-p]'), d = e.target.closest('[data-d]');
+    const v = e.target.closest('[data-v]'), a = e.target.closest('[data-a]'), c = e.target.closest('[data-c]'), s = e.target.closest('[data-s]'), p = e.target.closest('[data-p]'), d = e.target.closest('[data-d]'), rc = e.target.closest('[data-r]');
+    if (rc) return rcpt(D.stu.find(x => x.code === rc.dataset.r));
     if (c) { f.cls = c.dataset.c; return view(); }
     if (s) { f.stt = s.dataset.s; return view(); }
     if (p) return payDlg(D.stu.find(x => x.code === p.dataset.p));
@@ -5488,6 +5508,12 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.69', d:'۱۴۰۵/۰۸/۳۰', items:[
+    'ماژول حضور و غیاب دانش‌آموزان همیشه از زبانه‌ی «وضعیت حضور و غیاب» شروع می‌شود.',
+    'در زبانه‌ی «وضعیت حضور و غیاب» برای هر زنگ دکمه‌ی ورود به پنل دبیر هست؛ حضور و غیابِ ثبت‌نشده را ثبت و ثبت‌شده را مشاهده یا ویرایش کنید.',
+    'زبانه‌ی «گزارش»: دکمه‌های میان‌بُر «ترم اول»، «ترم دوم» و «کل سال» برای انتخاب بازه (بر اساس نوبت‌های تعریف‌شده در تنظیمات مدرسه).',
+    'پرداخت شهریه ← لیست: برای دانش‌آموزان تسویه‌شده دکمه‌ی «چاپ رسید» اضافه شد (پرداخت‌ها، جمع پرداختی، شهریه‌ی نهایی و مانده).',
+  ] },
   { v:'v5.68', d:'۱۴۰۵/۰۸/۳۰', items:[
     'آیکون «صفحه‌ی اصلی» همیشه در سربرگ و در سمت راستِ نشان مدرسه قرار دارد (در صفحه‌ی اصلی، با زدن آن صفحه به بالا برمی‌گردد).',
     'نام ماژول در ماژول‌هایی که دوبار نوشته می‌شد، فقط یک‌بار (در نوار بالای ماژول) نمایش داده می‌شود.',
@@ -5506,12 +5532,6 @@ const CHANGELOG = [
   ] },
   { v:'v5.65', d:'۱۴۰۵/۰۸/۳۰', items:[
     'چیدمان پیش‌فرض صفحه‌ی اصلی مدیر عوض شد: پنج نوار «اطلاعات مدرسه»، «خدمات آموزشی»، «خدمات پرورشی و مشاوره»، «خدمات اجرایی و ابزار» و «پیوند ها» با همان ترتیب ماژول‌ها که در صفحه‌ی اصلی دیده می‌شود. دکمه‌ی «بازنشانی» در «ویرایش صفحه اصلی» همین چیدمان را برمی‌گرداند.',
-  ] },
-  { v:'v5.64', d:'۱۴۰۵/۰۸/۲۹', items:[
-    'نام‌ها: «مدرسه» ← «تعریف مدرسه»، «مدیر مدرسه» ← «عوامل مدرسه»، «تنظیمات صفحه اصلی» ← «ویرایش صفحه اصلی».',
-    'عوامل مدرسه: علاوه بر مدیر، معاون آموزشی، معاون پرورشی و معاون اجرایی تعریف می‌شوند. صفحه‌ی ورود بخش جداگانه‌ی «معاونان» دارد و هر معاون فقط به ماژول‌های حوزه‌ی خودش دسترسی دارد (کنترل در سرور هم انجام می‌شود).',
-    'کلاس: پایه‌های هفتم، هشتم و نهم و رشته‌های «فنی و حرفه‌ای»، «کاردانش» و «عمومی» از فهرست‌ها حذف شد.',
-    'برنامه هفتگی: «شیفت مدرسه» ابتدا ثابت یا چرخشی بودن را می‌پرسد؛ در حالت ثابت صبح یا عصر و در حالت چرخشی شیفتِ هفته‌ی جاری را می‌گیرد و شیفت بقیه‌ی هفته‌ها را خودش تعیین می‌کند. فهرست شیفت در تعریف کلاس هم بر همین اساس محدود می‌شود. فهرست «تعداد زنگ» تا ۴ است.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5803,7 +5823,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.68';
+const VERSION = 'v5.69';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
