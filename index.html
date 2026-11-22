@@ -649,6 +649,17 @@ html{scroll-padding-top:calc(var(--stk,0px) + var(--hh,84px) + 8px)}
 @media(min-width:900px){.tabs.side{top:calc(var(--stk,0px) + var(--hh,84px) + 12px)}}
 @media print{.top{position:static}}
 .dupt{display:none!important}
+.who .nm,.who .role,#logoutBtn{display:none!important}
+#moreBtn{padding:0 8px}
+.mm{position:fixed;z-index:9400;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px -12px rgba(0,0,0,.45);padding:6px;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 80px);overflow:auto}
+.mm-h{padding:8px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px;display:flex;flex-direction:column;gap:2px}.mm-h span{font-size:12px;color:var(--muted)}
+.mm-i{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:10px;min-height:42px;border:0;background:transparent;color:inherit;border-radius:10px;font:inherit;cursor:pointer}
+.mm-i:hover,.mm-i:focus-visible{background:var(--input)}
+.mm-i>span{flex:1 1 auto}
+.mm-i.bad{color:var(--bad,#c0392b);margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+.mm-sw{width:34px;height:20px;border-radius:20px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.mm-sw::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.mm-sw.on{background:var(--ok,#2f9e5b)}.mm-sw.on::after{transform:translateX(-14px)}
 </style>
 </head>
 <body>
@@ -657,10 +668,9 @@ html{scroll-padding-top:calc(var(--stk,0px) + var(--hh,84px) + 8px)}
     <button class="homebtn" id="topHome" type="button" hidden title="صفحه‌ی اصلی" aria-label="بازگشت به صفحه‌ی اصلی"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></svg></button>
     <div class="brand"><img id="brandIcon" alt=""><div><b id="schoolName">سامانه مدرسه</b><span id="brandApp">مدرسه‌یار</span></div></div>
     <div class="tact">
-    <button class="btn sm" id="uiBtn" type="button" aria-label="ظاهر برنامه" title="ظاهر برنامه (تم و اندازه‌ی متن)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18" fill="currentColor"/></svg></button>
     <button class="btn sm" id="qsBtn" type="button" hidden aria-label="جست‌وجوی دانش‌آموز" title="جست‌وجوی دانش‌آموز"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="btn sm" id="installBtn" hidden>نصب اپ</button>
-    <div class="who" id="who" hidden><button type="button" class="wav" id="whoAv" hidden aria-label="عکس پروفایل"></button><span class="nm" id="whoName"></span><span class="pill role" id="whoRole"></span><button class="btn sm" id="logoutBtn" style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg><span>خروج</span></button></div>
+    <div class="who" id="who" hidden><button type="button" class="wav" id="whoAv" hidden aria-label="عکس پروفایل"></button><span class="nm" id="whoName"></span><span class="pill role" id="whoRole"></span><button class="btn sm" id="logoutBtn" style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg><span>خروج</span></button><button type="button" class="btn sm" id="moreBtn" aria-haspopup="menu" aria-expanded="false" aria-label="منو" title="منو"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>
     </div>
   </div>
 </header>
@@ -1031,7 +1041,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.69';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.70';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -1198,7 +1208,6 @@ function uiDlg() {
     };
   });
 }
-$('#uiBtn').onclick = () => uiDlg();
 applyUi();
 document.addEventListener('click', e => {
   const g = e.target.closest('[data-go]');
@@ -1291,6 +1300,46 @@ const navIco = (k, z) => NAV_ICO[k] ? `<svg viewBox="0 0 24 24" width="${z || 20
   if (who0) new MutationObserver(q).observe(who0, { attributes:true, attributeFilter:['hidden'] });
   if (window.ResizeObserver) new ResizeObserver(q).observe(top);
   addEventListener('resize', q); sync();
+})();
+/* منوی سه‌نقطه‌ی سربرگ: نام کاربر، تم تاریک، تغییر رمز، ابزارهای مدیر، نسخه‌ی آفلاین و خروج */
+(function () {
+  const btn = document.getElementById('moreBtn'); if (!btn) return;
+  let pop = null;
+  const dark = () => { const t = document.documentElement.getAttribute('data-theme'); return t === 'dark' || (t !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches); };
+  const close = () => { if (pop) { pop.remove(); pop = null; } btn.setAttribute('aria-expanded', 'false'); };
+  const IC = { moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>', key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>', out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>' };
+  const ico = k => IC[k] ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>` : navIco(k, 18);
+  const items = () => {
+    const u = S.user || {}, mgr = u.role === 'manager', ok = k => scopeOk(k) && !(OFF && (k === 'dlo' || k === 'hcf' || k === 'set'));
+    const a = [{ k:'theme', t:'تم تاریک', ic:'moon' }];
+    if (!OFF && !u.imp) a.push({ k:'pw', t:'تغییر رمز', ic:'key' });
+    if (mgr) [['set', 'تنظیمات', 'set'], ['hcf', 'ویرایش صفحه اصلی', 'plan'], ['dlo', 'دانلود نسخه آفلاین', 'off'], ['lnk', 'مدیریت پیوندها', 'lk_link'], ['ver', 'تغییرات برنامه', 'ver']].forEach(([k, t, ic]) => { if (ok(k)) a.push({ k, t, ic, go:k }); });
+    else if (!OFF) a.push({ k:'off', t:'دانلود نسخه آفلاین', ic:'off' });
+    a.push({ k:'out', t:'خروج', ic:'out', danger:true });
+    return a;
+  };
+  const open = () => {
+    close(); const u = S.user; if (!u) return;
+    const its = items(); pop = document.createElement('div'); pop.className = 'mm'; pop.setAttribute('role', 'menu');
+    pop.innerHTML = `<div class="mm-h"><b>${esc(u.name)}</b><span>${esc(roleFa(u) || '')}</span></div>` + its.map((x, i) => `<button type="button" role="menuitem" class="mm-i${x.danger ? ' bad' : ''}" data-i="${i}">${ico(x.ic)}<span>${esc(x.t)}</span>${x.k === 'theme' ? `<i class="mm-sw${dark() ? ' on' : ''}" aria-hidden="true"></i>` : ''}</button>`).join('');
+    document.body.appendChild(pop); btn.setAttribute('aria-expanded', 'true');
+    const r = btn.getBoundingClientRect(), w = Math.min(280, innerWidth - 16);
+    pop.style.width = w + 'px'; pop.style.top = (r.bottom + 6) + 'px'; pop.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    pop.onclick = e => {
+      const b = e.target.closest('.mm-i'); if (!b) return; const x = its[+b.dataset.i];
+      if (x.k === 'theme') { const cur = Object.assign({ theme:'auto', size:'1' }, store.get('ui') || {}); cur.theme = dark() ? 'light' : 'dark'; store.set('ui', cur); applyUi(); const sw = pop.querySelector('.mm-sw'); if (sw) sw.classList.toggle('on', dark()); return; }
+      close();
+      if (x.go) { goTab(x.go); window.scrollTo(0, 0); }
+      else if (x.k === 'pw') dialog('<div id="mmBox"></div><div class="dlg-actions"><button class="btn" data-close type="button">بستن</button></div>', d => passPanel($('#mmBox', d)));
+      else if (x.k === 'off') dialog('<div id="mmBox"></div><div class="dlg-actions"><button class="btn" data-close type="button">بستن</button></div>', d => mOffline($('#mmBox', d)));
+      else if (x.k === 'out') $('#logoutBtn').click();
+    };
+    const f = pop.querySelector('.mm-i'); if (f) f.focus();
+  };
+  btn.onclick = e => { e.stopPropagation(); if (pop) close(); else open(); };
+  document.addEventListener('click', e => { if (pop && !pop.contains(e.target) && !btn.contains(e.target)) close(); });
+  document.addEventListener('keydown', e => { if (pop && e.key === 'Escape') { close(); btn.focus(); } });
+  addEventListener('resize', close);
 })();
 function tabs(list, cur, onPick, mode) {
   const el = document.createElement('nav');
@@ -1507,7 +1556,7 @@ function passPanel(el) {                           // ماژول «تغییر ر
     <label class="f">رمز فعلی<input id="pOld" type="password" autocomplete="current-password" required></label>
     <label class="f">رمز تازه (دست‌کم ۴ کاراکتر)<input id="pNew" type="password" autocomplete="new-password" required></label>
     <label class="f">تکرار رمز تازه<input id="pNew2" type="password" autocomplete="new-password" required></label>
-    <p class="muted small" style="margin:0">مدیر مدرسه رمز شما را می‌بیند تا اگر فراموش کردید، آن را به شما بگوید.</p>
+    ${S.user && S.user.role === 'manager' ? '' : '<p class="muted small" style="margin:0">مدیر مدرسه رمز شما را می‌بیند تا اگر فراموش کردید، آن را به شما بگوید.</p>'}
     <div class="savebar"><span class="grow"></span><button class="btn primary" id="pGo">ذخیره‌ی رمز تازه</button></div></form>`;
   $('#pf', el).onsubmit = async e => {
     e.preventDefault();
@@ -2369,11 +2418,12 @@ async function viewManager() {
 /* --- سه بخش اصلی مدیر و ماژول‌های هر بخش (کاشی) --- */
 /* ===== صفحه‌ی اول: نوارهای رنگی بخش‌ها با کاشی‌های افقی؛ نام و چیدمان نوارها در تنظیمات قابل تغییر است ===== */
 const HOME_COL = { blue:['#2b57a7', '#5ba8e6', 'آبی'], teal:['#0f8a7d', '#8fd5c6', 'سبز'], navy:['#12507f', '#6a96c8', 'سرمه‌ای'], purple:['#5b3ec2', '#ab98f0', 'بنفش'], rose:['#b4235f', '#f0a0c3', 'صورتی'], orange:['#c2410c', '#fbb98a', 'نارنجی'], green:['#2f7d32', '#9fd8a4', 'سبز روشن'], slate:['#334155', '#9fb0c6', 'خاکستری'] };
+const MENU_MODS = { set:1, hcf:1, dlo:1, lnk:1, ver:1, off:1, pw:1 };   // این موارد به منوی سه‌نقطه‌ی سربرگ رفته‌اند و کاشی صفحه‌ی اصلی ندارند
 const HOME_DEF = {
-  manager:[{ id:'inf', title:'اطلاعات مدرسه', color:'teal', items:['scl', 'mgr', 'cls', 'tch', 'stu', 'crs', 'sch', 'org'] }, { id:'edu', title:'خدمات آموزشی', color:'blue', items:['day', 'att', 'evl', 'jam', 'exm', 'ana'] }, { id:'pro', title:'خدمات پرورشی و مشاوره', color:'blue', items:['dsc', 'cns', 'pta', 'ban'] }, { id:'exe', title:'خدمات اجرایی و ابزار', color:'orange', items:['stf', 'fee', 'sms', 'alg', 'ver', 'dlo', 'hcf', 'set'] }, { id:'lkb', title:'پیوند ها', color:'green', items:['lnk'] }],
-  teacher:[{ id:'tcls', title:'امور کلاس', color:'blue', items:['att', 'gr', 'fac', 'exm'] }, { id:'tana', title:'آزمون‌ها و تحلیل', color:'teal', items:['jam', 'ana', 'rpt'] }, { id:'tacc', title:'حساب و ابزار', color:'slate', items:['off', 'pw'] }],
-  student:[{ id:'sedu', title:'اطلاعات تحصیلی', color:'blue', items:['ntf', 'att', 'gr', 'card', 'rank', 'ana'] }, { id:'sexm', title:'آزمون و برنامه‌ریزی', color:'teal', items:['jam', 'exm', 'plan'] }, { id:'ssrv', title:'خدمات', color:'navy', items:['fee', 'csi', 'fac'] }, { id:'sacc', title:'حساب کاربری', color:'slate', items:['off', 'pw'] }],
-  counselor:[{ id:'cmain', title:'خدمات مشاوره', color:'teal', items:['ses', 'rpt', 'inf', 'ins', 'fil'] }, { id:'cacc', title:'حساب و ابزار', color:'slate', items:['off', 'pw'] }]
+  manager:[{ id:'inf', title:'اطلاعات مدرسه', color:'teal', items:['scl', 'mgr', 'cls', 'tch', 'stu', 'crs', 'sch', 'org'] }, { id:'edu', title:'خدمات آموزشی', color:'blue', items:['day', 'att', 'evl', 'jam', 'exm', 'ana'] }, { id:'pro', title:'خدمات پرورشی و مشاوره', color:'blue', items:['dsc', 'cns', 'pta', 'ban'] }, { id:'exe', title:'خدمات اجرایی و ابزار', color:'orange', items:['stf', 'fee', 'sms', 'alg'] }, { id:'lkb', title:'پیوند ها', color:'green', items:[] }],
+  teacher:[{ id:'tcls', title:'امور کلاس', color:'blue', items:['att', 'gr', 'fac', 'exm'] }, { id:'tana', title:'آزمون‌ها و تحلیل', color:'teal', items:['jam', 'ana', 'rpt'] }, { id:'tacc', title:'حساب و ابزار', color:'slate', items:[] }],
+  student:[{ id:'sedu', title:'اطلاعات تحصیلی', color:'blue', items:['ntf', 'att', 'gr', 'card', 'rank', 'ana'] }, { id:'sexm', title:'آزمون و برنامه‌ریزی', color:'teal', items:['jam', 'exm', 'plan'] }, { id:'ssrv', title:'خدمات', color:'navy', items:['fee', 'csi', 'fac'] }, { id:'sacc', title:'حساب کاربری', color:'slate', items:[] }],
+  counselor:[{ id:'cmain', title:'خدمات مشاوره', color:'teal', items:['ses', 'rpt', 'inf', 'ins', 'fil'] }, { id:'cacc', title:'حساب و ابزار', color:'slate', items:[] }]
 };
 const HOME_KEYS = {                              // همه‌ی ماژول‌های هر نقش برای ویرایشگر چیدمان
   manager:() => HOME_DEF.manager.reduce((a, s) => a.concat(s.items), []).concat(linkKeys()).map(k => [k, MODS[k] ? MODS[k][0] : k]),
@@ -2403,6 +2453,7 @@ function homeCard(k, title, icon, sub, cnt) {
   return `<div class="tilew" data-k="${esc(k)}"><button type="button" class="tile hc" data-k="${esc(k)}"><span class="ti">${navIco(icon, 26)}</span><span class="tt"><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>${cnt || ''}</button></div>`;
 }
 function tileHome(el, title, sub, tiles, go, role, st) {
+  tiles = tiles.filter(t => !MENU_MODS[t[2]]);
   const by = {}; tiles.forEach(t => by[t[2]] = t);
   const secs = homeSecs(role || 'student', st, tiles.map(t => t[2]));
   el.innerHTML = `<div class="hero"><div class="hero-img"></div><div class="hero-t"><h2>${esc(title)}</h2><div class="muted">${esc(sub)}</div></div></div>${bannerBox()}${'<div class="note" id="offNote" style="background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad);font-weight:700">توجه: برای اینکه در زمان قطعی اینترنت به داده‌های برنامه دسترسی داشته باشید، به‌صورت دوره‌ای یا در شرایط اضطراری نسخه‌ی آفلاین بسازید و ' + (OFF ? 'دانلود کنید' : '<a href="#" id="offGo" style="color:inherit;text-decoration:underline">دانلود کنید</a>') + '.</div>'}
@@ -2499,7 +2550,7 @@ function tilesDnD(box, onDone) {                 // جابه‌جایی با ک�
   box.addEventListener('dragstart', e => e.preventDefault());
 }
 function mTiles(el) {
-  const avail = SECTS.reduce((a, s) => a.concat(s[2]), []).filter(k => !(OFF && (k === 'off' || k === 'dlo' || k === 'hcf' || k === 'set')) && scopeOk(k)).concat(linkKeys());
+  const avail = SECTS.reduce((a, s) => a.concat(s[2]), []).filter(k => !MENU_MODS[k] && scopeOk(k)).concat(linkKeys());
   const secs = homeSecs('manager', M.settings, avail).map(s => { const saved = (M && M.tord && M.tord[s.id]) || []; if (saved.length) s.items = s.items.slice().sort((a, b) => { const i = saved.indexOf(a), j = saved.indexOf(b); return (i < 0 ? 999 : i) - (j < 0 ? 999 : j); }); return s; });
   el.innerHTML = `<div class="hero"><div class="hero-img"></div><div class="hero-t"><h2>${esc((M.settings && M.settings.school) || S.school || '')}</h2><div class="muted">سال تحصیلی ${esc(ayLabel(M.settings))}</div></div></div>${bannerBox()}
     <div class="hsecs">${homeHtml(secs, k => { const m = MODS[k]; return homeCard(k, m[0], m[1], m.url ? 'پیوند' : HOME_SUB.manager[k] || '', cntBadge(k)); })}</div>
@@ -2629,7 +2680,7 @@ const mAttGrp = el => { MSUB.att = 'lv'; mGroup(el, 'att', [['lv', 'وضعیت �
 const mDiscGrp = el => mGroup(el, 'dsc', [['add', 'ثبت و سوابق انضباط', mDisc], ['apl', 'درخواست‌های حذف نمره', mDap], ['drp', 'نمره‌ی انضباط دانش‌آموزان', mDiscRpt], ['cfg', 'تنظیم نمره‌های منفی', mDscCfg]]);
 function mHomeCfg(el) {                          // تنظیمات ← صفحه‌ی اصلی: نام نوارها، رنگ، جای هر ماژول و ترتیب برای هر نقش
   let role = 'manager', cfg = null;
-  const keysOf = () => HOME_KEYS[role](), ttl = k => (keysOf().find(x => x[0] === k) || [k, k])[1];
+  const keysOf = () => HOME_KEYS[role]().filter(x => !MENU_MODS[x[0]]), ttl = k => (keysOf().find(x => x[0] === k) || [k, k])[1];
   const build = () => {
     const keys = keysOf().map(x => x[0]), cur = JSON.parse(JSON.stringify(homeCfgOf(role, M.settings))), used = {};
     cur.forEach(s => { s.items = s.items.filter(k => keys.indexOf(k) >= 0 && !used[k]); s.items.forEach(k => used[k] = 1); });
@@ -5508,6 +5559,11 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.70', d:'۱۴۰۵/۰۹/۰۱', items:[
+    'سربرگ: منوی سه‌نقطه اضافه شد. به ترتیب: نام کاربر، تم تاریک، تغییر رمز، تنظیمات، ویرایش صفحه اصلی، دانلود نسخه آفلاین، مدیریت پیوندها، تغییرات برنامه و خروج (برای مدیر؛ سایر نقش‌ها فقط موارد مربوط به خودشان).',
+    'آیکن تم و دکمه‌ی خروج و نام کاربر از سربرگ برداشته شد و داخل منوی سه‌نقطه قرار گرفت.',
+    'ماژول‌های تنظیمات، ویرایش صفحه اصلی، دانلود نسخه آفلاین، مدیریت پیوندها و تغییرات برنامه (و «تغییر رمز» و «نسخه‌ی آفلاین» سایر نقش‌ها) از صفحه‌ی اصلی حذف شد؛ از منوی سه‌نقطه در دسترس‌اند.',
+  ] },
   { v:'v5.69', d:'۱۴۰۵/۰۸/۳۰', items:[
     'ماژول حضور و غیاب دانش‌آموزان همیشه از زبانه‌ی «وضعیت حضور و غیاب» شروع می‌شود.',
     'در زبانه‌ی «وضعیت حضور و غیاب» برای هر زنگ دکمه‌ی ورود به پنل دبیر هست؛ حضور و غیابِ ثبت‌نشده را ثبت و ثبت‌شده را مشاهده یا ویرایش کنید.',
@@ -5529,9 +5585,6 @@ const CHANGELOG = [
     'سربرگ هنگام اسکرول به پایین صفحه ثابت می‌ماند و همیشه در دسترس است.',
     'آیکون «صفحه‌ی اصلی» از داخل ماژول‌ها به سربرگ منتقل شد؛ فقط وقتی ماژولی باز است نمایش داده می‌شود و عنوان ماژول در بالای محتوا می‌ماند.',
     'چیدمان سربرگ در موبایل اصلاح شد: نام مدرسه در یک ردیف و آیکون‌ها در ردیف جداگانه قرار می‌گیرند و دیگر نام مدرسه روی آیکون‌ها نمی‌افتد.',
-  ] },
-  { v:'v5.65', d:'۱۴۰۵/۰۸/۳۰', items:[
-    'چیدمان پیش‌فرض صفحه‌ی اصلی مدیر عوض شد: پنج نوار «اطلاعات مدرسه»، «خدمات آموزشی»، «خدمات پرورشی و مشاوره»، «خدمات اجرایی و ابزار» و «پیوند ها» با همان ترتیب ماژول‌ها که در صفحه‌ی اصلی دیده می‌شود. دکمه‌ی «بازنشانی» در «ویرایش صفحه اصلی» همین چیدمان را برمی‌گرداند.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5823,7 +5876,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.69';
+const VERSION = 'v5.70';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
