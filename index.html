@@ -429,15 +429,15 @@ dialog .dlg-actions .btn.primary{min-width:150px}
 :root{
   --spec:linear-gradient(90deg,#12507f,#2b57a7,#5ba8e6,#0f8a7d,#8fd5c6);
   --spec-soft:linear-gradient(115deg,#12355D 0%,#1f4a8f 38%,#2b57a7 70%,#4f93d8 100%);
-  --glass:rgba(255,255,255,.84);
+  --glass:rgba(255,255,255,.97);
   --depth:0 1px 2px rgba(15,23,42,.06),0 14px 34px -10px rgba(43,87,167,.22);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --glass:rgba(18,32,56,.78);
+  --glass:rgba(18,32,56,.96);
   --depth:0 1px 2px rgba(0,0,0,.4),0 16px 36px -10px rgba(91,168,230,.28);
 }}
 :root[data-theme="dark"]{
-  --glass:rgba(18,32,56,.78);
+  --glass:rgba(18,32,56,.96);
   --depth:0 1px 2px rgba(0,0,0,.4),0 16px 36px -10px rgba(91,168,230,.28);
 }
 body{background:var(--bg);position:relative;min-height:100vh}
@@ -465,7 +465,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     var(--bg)}
 .top{background:var(--spec-soft);box-shadow:0 8px 24px -10px rgba(18,53,93,.55);position:relative}
 .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--spec);opacity:.9}
-.card{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border:1px solid rgba(255,255,255,.55);box-shadow:var(--depth);border-radius:18px}
+.card{background:var(--glass);border:1px solid rgba(255,255,255,.55);box-shadow:var(--depth);border-radius:18px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card{border-color:rgba(255,255,255,.08)}}
 :root[data-theme="dark"] .card{border-color:rgba(255,255,255,.08)}
 .btn.primary{background:linear-gradient(120deg,#1f4a8f,#2b57a7 55%,#4f93d8);border-color:transparent;color:#fff;box-shadow:0 6px 16px -6px rgba(43,87,167,.7);transition:transform .15s,box-shadow .15s}
@@ -487,7 +487,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 @media print{#impBar{display:none!important}}
 
 /* ===== ناوبری مدرن: نوار پایین در موبایل، منوی کناری در دسکتاپ ===== */
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:5px;margin:16px 0;background:var(--glass);border:1px solid rgba(255,255,255,.55);border-radius:18px;box-shadow:var(--depth);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);scrollbar-width:none}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:5px;margin:16px 0;background:var(--glass);border:1px solid rgba(255,255,255,.55);border-radius:18px;box-shadow:var(--depth);scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{display:inline-flex;align-items:center;gap:8px;border:0;border-bottom:0;border-image:none;background:none;border-radius:13px;padding:9px 15px;color:var(--muted);font-weight:700;white-space:nowrap;cursor:pointer;transition:background .18s,color .18s,transform .18s}
 .tabs button:hover{background:rgba(43,87,167,.08);color:var(--ink)}
@@ -562,8 +562,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .dpd{border:1px solid transparent;background:none;color:var(--ink);border-radius:10px;height:36px;cursor:pointer;font:inherit}.dpd:hover{background:var(--input)}.dpd.fri{color:var(--bad)}.dpd.td{border-color:var(--primary)}.dpd.sel{background:var(--primary);color:var(--on-primary);font-weight:700}
 .dpf{display:flex;justify-content:space-between;margin-top:8px}
 .ver{text-align:center;font-size:11px;opacity:.6;margin-top:10px;color:inherit}
-.uiopt{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}.uiopt button{flex:1 1 90px;border:1.5px solid var(--line);background:var(--input);color:var(--ink);border-radius:12px;padding:10px 8px;cursor:pointer;font:inherit}.uiopt button.on{border-color:var(--primary);background:var(--card);box-shadow:0 0 0 2px var(--primary) inset;font-weight:700}
-#uiBtn{padding:0 9px}#uiBtn svg{width:18px;height:18px;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 .hello .av{overflow:hidden}.hello .av img,.dlg-av img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
 .wav{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#1a1a1a;display:inline-grid;place-items:center;font-weight:700;font-size:14px;overflow:hidden;flex:none;border:2px solid rgba(255,255,255,.7);padding:0;cursor:default}
@@ -592,10 +590,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .tile:hover::after{opacity:.12}.tile:active{transform:translateY(-1px) scale(.985)}
 .tile:focus-visible{outline:3px solid rgba(43,87,167,.45);outline-offset:2px}
 .ti{position:relative;width:62px;height:62px;border-radius:20px;isolation:isolate;box-shadow:0 12px 20px -10px var(--gs),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -6px 10px rgba(0,0,0,.12)}
-.ti::before{content:"";position:absolute;inset:-8px;border-radius:28px;background:var(--g);filter:blur(16px);opacity:.28;z-index:-1}
 .ti::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%);pointer-events:none}
 .tile:hover .ti{transform:translateY(-2px) scale(1.06) rotate(-3deg)}
-.ti svg{width:30px;height:30px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.ti svg{width:30px;height:30px}
 .tl{font-weight:800;font-size:13px;line-height:1.55;min-height:2.6em;display:flex;align-items:center}
 .cnt{top:9px;inset-inline-start:auto;inset-inline-end:9px;min-width:22px;height:22px;font-size:12px;border:0;box-shadow:0 4px 10px -3px rgba(0,0,0,.4),0 0 0 3px var(--card)}
 @keyframes tup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -965,12 +962,6 @@ const WEEK = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنب
 const weekday = s => { const d = jToDate(s); return d ? WEEK[d.getDay()] : ''; };
 const dayIdx = s => { const d = jToDate(s); return d ? (d.getDay() + 1) % 7 : 0; };       // ۰ = شنبه
 const todayJ = () => jFromDate(new Date());
-function parityOf(s, ref) {                 // هفته‌ی فرد/زوج نسبت به تاریخ مبنا (همان منطق سرور)
-  const a = jToDate(s), r = jToDate(ref);
-  if (!a || !r) return 'فرد';
-  const w = Math.floor((Math.round((a - r) / 864e5) + dayIdx(ref)) / 7);
-  return ((w % 2) + 2) % 2 === 0 ? 'فرد' : 'زوج';
-}
 const monthLabel = k => MONTHS[+k.slice(5, 7) - 1] + ' ' + k.slice(0, 4);
 const monthEnd = k => k + '/' + (+k.slice(5, 7) <= 6 ? '31' : '30');
 function acadMonths(st) {                   // ماه‌های سال تحصیلی از شروع نوبت اول تا پایان نوبت آخر
@@ -1041,7 +1032,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.70';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.72';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -1186,27 +1177,10 @@ function eyeify(root) {
 }
 new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) eyeify(n); }))).observe(document.body, { childList:true, subtree:true });
 eyeify(document);
-const UI_SIZES = [['0.92', 'کوچک'], ['1', 'معمولی'], ['1.12', 'بزرگ'], ['1.25', 'خیلی بزرگ']];
 function applyUi() {
   const u = Object.assign({ theme:'auto', size:'1' }, store.get('ui') || {}), r = document.documentElement;
   if (u.theme === 'light' || u.theme === 'dark') r.setAttribute('data-theme', u.theme); else r.removeAttribute('data-theme');
   document.body.style.zoom = u.size === '1' ? '' : u.size;
-}
-function uiDlg() {
-  const u = Object.assign({ theme:'auto', size:'1' }, store.get('ui') || {});
-  const grp = (key, opts) => `<div class="uiopt" data-k="${key}">${opts.map(o => `<button type="button" data-v="${o[0]}" class="${String(u[key]) === o[0] ? 'on' : ''}" aria-pressed="${String(u[key]) === o[0]}">${o[1]}</button>`).join('')}</div>`;
-  dialog(`<h3>ظاهر برنامه</h3><p class="muted small">این تنظیم فقط روی همین دستگاه ذخیره می‌شود.</p>
-    <b>حالت نمایش</b>${grp('theme', [['auto', 'خودکار (طبق دستگاه)'], ['light', 'روشن'], ['dark', 'تاریک']])}
-    <b>اندازه‌ی متن</b>${grp('size', UI_SIZES)}
-    <div class="dlg-actions"><button class="btn" id="uiReset" type="button">بازگشت به پیش‌فرض</button><button class="btn primary" data-close type="button">تأیید</button></div>`, d => {
-    d.onclick = e => {
-      if (e.target.closest('#uiReset')) { store.del('ui'); applyUi(); return uiDlg(); }
-      const b = e.target.closest('.uiopt button'); if (!b) return;
-      const k = b.parentElement.dataset.k, cur = Object.assign({ theme:'auto', size:'1' }, store.get('ui') || {});
-      cur[k] = b.dataset.v; store.set('ui', cur); applyUi();
-      $$('button', b.parentElement).forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
-    };
-  });
 }
 applyUi();
 document.addEventListener('click', e => {
@@ -1219,7 +1193,6 @@ document.addEventListener('click', e => {
 
 const NAV_ICO = {
   fee:'<rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
-  lrq:'<path d="M14 3H6v18h8"/><path d="M14 3l5 2v14l-5 2z"/><path d="M11 12h.01"/>',
   pta:'<circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 20c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5M10 20c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5"/>',
   plan:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5"/><path d="M9 7h6M9 11h4"/>',
   sms:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
@@ -1441,13 +1414,9 @@ function printTable(title, head, rows, foot) {
   printHtml(`<section class="pg">${printHead(title)}<table><thead><tr>${head.map(h => '<th>' + esc(h) + '</th>').join('')}</tr></thead><tbody>${rows.map(r => '<tr>' + r.map(c => '<td>' + esc(c) + '</td>').join('') + '</tr>').join('')}</tbody></table>${foot ? '<p>' + esc(foot) + '</p>' : ''}</section>`);
 }
 const rcCls = v => v == null ? '' : v >= 17 ? 'rk1' : v >= 14 ? 'rk2' : v >= 12 ? 'rk3' : v >= 10 ? 'rk4' : 'rk5';
-const rcLvl = v => v == null ? '—' : v >= 17 ? 'عالی' : v >= 14 ? 'خوب' : v >= 12 ? 'قابل قبول' : v >= 10 ? 'نیازمند تلاش بیشتر' : 'ضعیف';
-const rcBar = v => v == null ? '' : `<span class="rcb"><i class="${rcCls(v)}" style="width:${Math.max(3, Math.min(100, v / 20 * 100))}%"></i></span>`;
-const rcTiles = arr => `<div class="rct">${arr.filter(Boolean).map(a => `<div class="${a[2] || ''}"><small>${esc(a[0])}</small><b>${a[1]}</b></div>`).join('')}</div>`;
 // برگه‌ی کارنامه‌ی یک دانش‌آموز (برای چاپ)
 /* ===== کارنامه‌ی ماتریسی: ۶ نوع آزمون (طول ترم / مستمر / پایانی × دو نوبت) ===== */
 const RC_G = { a1:[0, 1], b1:[2], a2:[3, 4], b2:[5] };
-const RC_GN = { a1:'معدل طول ترم اول و مستمر', b1:'معدل پایانی ترم اول', a2:'معدل طول ترم دوم و مستمر', b2:'معدل پایانی ترم دوم' };
 const rcTypeIdx = t => { t = String(t || ''); const i = EXAM_TYPES.findIndex(x => t === x || t.indexOf(x + ' - ') === 0); return i < 0 ? 0 : i; };
 const rcFill = v => v >= 17 ? '#15803d' : v >= 14 ? '#1d4ed8' : v >= 12 ? '#b45309' : v >= 10 ? '#c2410c' : '#b91c1c';
 function rcModel(d) {                              // d: {grades, coefs}؛ سلول هر نوع آزمون = میانگین نمره‌های آن نوع (از ۲۰)
@@ -1724,7 +1693,6 @@ const cShort = (n, all) => {                      // عنوان کوتاه در�
   return f !== n && (all || []).filter(x => String(x).trim().split(/\s+/)[0] === f).length < 2 ? f : n;
 };
 const vth = (n, all, sub) => { n = String(n == null ? '' : n); const t = cShort(n, all); return `<th class="vh" title="${esc(n)}"><div class="vt">${esc(t.length > 18 ? t.slice(0, 17) + '…' : t)}</div>${sub ? `<small>${sub}</small>` : ''}</th>`; };   // سرستون عمودی برای نام درس
-const thC = (n, all) => vth(n, all);
 const mcell = (t, c) => `<td class="mc${c ? ' ' + c : ''}">${t == null ? '' : t}</td>`;
 function matrix(head, rows, o) {                   // head: عنوان ستون‌ها (html)؛ rows: [{l, cells:[html | {t,c}]}]؛ o.foot: {l, cells}
   o = o || {};
@@ -1743,20 +1711,6 @@ function hbars(items, o) {                         // items: [{l, v}]؛ o.max (�
   }).join('')}</div>${o.mark != null ? `<p class="muted small">خط عمودی: ${esc(o.markL || 'میانگین')} (${nf(o.mark)})</p>` : ''}`;
 }
 // کارنامه: میانگین هر درس (از ۲۰) و معدل وزنی با ضریب‌هایی که مدیر تعیین کرده
-function cardData(d, term) {
-  const coef = {};
-  (d.coefs || []).forEach(c => coef[norm(c.course)] = c.coef);
-  const by = {};
-  d.grades.filter(g => g.date >= term.from && g.date <= term.to).forEach(g => (by[g.course] = by[g.course] || []).push(g.score / g.max * 20));
-  const rows = Object.keys(by).sort(byFa).map(c => {
-    const v = by[c], avg = v.reduce((a, b) => a + b, 0) / v.length, has = coef[norm(c)] != null;
-    return { course:c, n:v.length, avg, coef:has ? coef[norm(c)] : 1, set:has };
-  });
-  const used = rows.filter(r => r.coef > 0), sumC = used.reduce((a, r) => a + r.coef, 0);
-  const gpa = sumC ? used.reduce((a, r) => a + r.avg * r.coef, 0) / sumC : null;
-  const ab = attAgg(d.ses || [], d.att || [], term.from, term.to).tot;
-  return { rows, sumC, gpa, ab };
-}
 
 /* ===================== دانش‌آموز / ولی ===================== */
 async function viewStudent() {
@@ -2484,10 +2438,6 @@ function linkKeys() {                            // هر پیوند یک ماژ�
   ((M && M.links) || []).forEach((x, i) => { MODS[x.id] = [x.title, 'lk_' + (LINK_ICONS[x.icon] ? x.icon : 'globe'), LINK_COL[i % LINK_COL.length], () => {}]; MODS[x.id].url = x.url; ks.push(x.id); });
   return ks;
 }
-function tileOrder(sect) {                       // ترتیب کاشی‌ها برای هر کاربر (روی سرور، با حساب خودش)
-  const saved = (M && M.tord && M.tord[sect[0]]) || [], base = sect[2].filter(k => !(OFF && (k === 'off' || k === 'dlo' || k === 'hcf' || k === 'set')) && scopeOk(k));
-  return base.sort((a, b) => { const i = saved.indexOf(a), j = saved.indexOf(b); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j); });
-}
 const CNT_NEW = { exm:1, dsc:1, cns:1, att:1 };   // شمارنده‌ی «جدید» (از آخرین بازشدن)
 const mSeenK = () => 'mSeen_' + (S.user ? S.user.code : '');
 function cntHtml(v, warn) {
@@ -2501,12 +2451,6 @@ function cntBadge(k) {                           // فقط موارد نیازم
   if (k === 'ver') return cntHtml(verNew() || null, 1);
   if (CNT_NEW[k]) return cntHtml(seenNew(mSeenK(), k, +v || 0) || null, 1);
   return '';
-}
-function allOrder() {                            // ترتیب یکپارچه‌ی همه‌ی ماژول‌ها برای هر کاربر
-  const base = [].concat.apply([], SECTS.map(tileOrder)).concat(linkKeys()), saved = (M && M.tord && M.tord.all) || [];
-  if (!saved.length) return base;
-  const pos = k => { const i = saved.indexOf(k); return i < 0 ? 1000 + base.indexOf(k) : i; };
-  return base.slice().sort((a, b) => pos(a) - pos(b));
 }
 function tilesDnD(box, onDone) {                 // جابه‌جایی با کشیدن و رها کردن (ماوس و لمس)
   let st = null, timer = null;
@@ -2700,7 +2644,6 @@ function mHomeCfg(el) {                          // تنظیمات ← صفحه�
           <select data-act="im" aria-label="انتقال به نوار دیگر"><option value="">انتقال به…</option>${cfg.map((o, n) => n === i ? '' : `<option value="${n}">${esc(o.title || 'نوار ' + nf(n + 1))}</option>`).join('')}</select></div>`).join('') : '<div class="muted small" style="padding:8px">ماژولی در این نوار نیست؛ این نوار در صفحه‌ی اول نمایش داده نمی‌شود.</div>'}</div></div>`; }).join('');
   };
   build(); paint();
-  const L = () => $('#hcL');
   el.oninput = e => { const t = e.target.closest('[data-t]'); if (t) cfg[+t.dataset.t].title = t.value; };
   el.onchange = e => { const s = e.target.closest('select[data-act="im"]'); if (!s || s.value === '') return; const i = +s.closest('.hcs').dataset.i, j = +s.closest('.hci').dataset.j, k = cfg[i].items.splice(j, 1)[0]; cfg[+s.value].items.push(k); paint(); };
   el.onclick = async e => {
@@ -3085,11 +3028,6 @@ function mStudents(el) {
 
 /* --- دبیران --- */
 function mTeachers(el) {
-  const courses = code => {
-    const m = {};
-    M.schedule.filter(s => s.teacher === code).forEach(s => { const k = s.cls + ' · ' + s.course; m[k] = (m[k] || 0) + (s.week === 'همه' ? 1 : 0.5); });
-    return Object.keys(m).map(k => `<span class="pill info">${esc(k)} (${nf(m[k])} زنگ)</span>`).join('') || '<span class="muted small">درسی تخصیص نیافته</span>';
-  };
   el.innerHTML = `
     <h2>افزودن دبیر</h2>
     <p class="muted small">دبیر با کد پرسنلی وارد می‌شود و فقط کلاس‌ها و درس‌هایی را می‌بیند که در «برنامه هفتگی» به او داده شده است.</p>
@@ -3672,7 +3610,7 @@ async function mGradeStatus(el) {
     const tn = uniq(d.list.map(x => x.teacherName || '—')).sort(byFa);
     if (GS.tch && tn.indexOf(GS.tch) < 0) GS.tch = '';
     $('#gD').innerHTML = '<option value="">همه‌ی دبیران</option>' + tn.map(n => `<option ${n === GS.tch ? 'selected' : ''}>${esc(n)}</option>`).join('');
-    const all = d.list.filter(x => (!GS.cls || norm(x.cls) === norm(GS.cls)) && (!GS.tch || (x.teacherName || '—') === GS.tch)), l = all.filter(x => !GS.st || (GS.st === 'yes') === x.done);
+    const all = d.list.filter(x => (!GS.cls || norm(x.cls) === norm(GS.cls)) && (!GS.tch || (x.teacherName || '—') === GS.tch));
     const yes = all.filter(x => x.done).length;
     $('#rOut').innerHTML = all.length ? `${kpis([[nf(all.length), 'کل درس‌ها'], [nf(yes), 'نمره وارد شده', 'ok'], [nf(all.length - yes), 'نمره وارد نشده', all.length - yes ? 'bad' : 'ok']])}
       <h3 style="margin-top:16px">ماتریس ثبت نمرات (کلاس × درس) · ${esc(d.label)}</h3>
@@ -3712,7 +3650,7 @@ const JX = { list:[], grades:[], cls:'' };
 const JK = { p:'راه موفقیت' };
 const jIsMgr = () => !!(S.user && S.user.role === 'manager' && !S.user.imp);
 async function jamKind(el, type) {
-  const can = jIsMgr(), nm = JK[type], tch = S.user && S.user.role === 'teacher';
+  const can = jIsMgr(), tch = S.user && S.user.role === 'teacher';
   el.innerHTML = `<div class="row" style="align-items:center"><h2 style="flex:1 1 auto">${can ? 'ثبت نتایج آزمون' : 'نتایج آزمون‌ها'}</h2><button class="btn" id="jAgg" type="button" style="flex:0 0 auto">نتایج تجمیعی</button>${can ? '<button class="btn primary" id="jNew" type="button" style="flex:0 0 auto">ثبت نتیجه آزمون</button>' : ''}</div>
     <p class="muted small">${can ? 'آزمون را تعریف کنید، سپس برای هر کلاس درصد دروس هر دانش‌آموز (یا غیبت موجه/غیرموجه) را وارد کنید. ' : ''}برای هر دانش‌آموز درصد دروس و تراز را وارد کنید؛ رتبه بر پایه‌ی تراز محاسبه می‌شود. غیبت موجه و غیرموجه در میانگین و رتبه نمی‌آید و غیبت غیرموجه از نمره‌ی انضباط کم می‌کند.${tch ? ' فقط نتایج دانش‌آموزان کلاس‌های شما نمایش داده می‌شود.' : ''}</p>
     <div id="jList">${loadingHtml}</div><div id="jPane"></div>`;
@@ -4033,7 +3971,7 @@ async function viewFeeFile(id) {
 }
 async function stFee(d, el) {
   let m; try { m = await api('feeMe', {}); } catch (e) { el.innerHTML = `<p class="note warn">${esc(e.message)}</p>`; return; }
-  const st = m.state, aid = m.cat !== 'عادی', n = st.pays.length;
+  const st = m.state, aid = m.cat !== 'عادی';
   const none = !(st.paid > 0) && st.remaining > 0, done = st.remaining <= 0 && st.pays.length > 0;               // تسویه‌شده: نام قسط‌ها نمایش داده نمی‌شود
   const rows = st.pays.map((x, i) => `<tr><td data-l="${done ? 'پرداخت' : 'قسط'}">${done ? (st.pays.length > 1 ? 'پرداخت ' + nf(i + 1) : 'پرداخت کامل') : esc(x.instName)}</td><td data-l="مبلغ" class="num">${tmn(x.amount)}</td><td data-l="تاریخ پرداخت" class="num">${esc(x.date)}</td><td data-l="وضعیت"><span class="pill ok">پرداخت شده</span></td></tr>`).join('');
   const nxt = st.remaining > 0 ? `<tr><td data-l="${none ? 'شرح' : 'قسط'}"><b>${none ? 'مبلغ شهریه' : esc(st.next)}</b></td><td data-l="مبلغ" class="num">${tmn(st.remaining)}</td><td data-l="تاریخ پرداخت" class="muted">—</td><td data-l="وضعیت"><span class="pill bad">پرداخت نشده</span></td></tr>` : '';
@@ -4469,7 +4407,7 @@ function anStu(s) {                                // وضعیت و نقاط ض�
   return { cr, weak, mid, strong, fall, itDrop, lvl };
 }
 function anTips(s, cm, me) {                       // توصیه‌های خودکار برای یک دانش‌آموز
-  const a = anStu(s), L = [], who = me ? 'شما' : 'دانش‌آموز', cls = c => cm[norm(s.cls) + '|' + norm(c)];
+  const a = anStu(s), L = [], cls = c => cm[norm(s.cls) + '|' + norm(c)];
   const below = a.cr.filter(x => { const k = cls(x.c); return k && k.n >= 4 && x.v <= k.avg - 2 && !a.weak.some(w => w.c === x.c); });
   const nm = (l, f) => anJoin(l.map(x => '«' + x.c + '» (' + nf(f ? f(x) : x.v) + ')'));
   if (a.weak.length) L.push(['bad', nm(a.weak) + (a.weak.length > 1 ? ' زیر حد قبولی‌اند.' : ' زیر حد قبولی است.'), me ? 'این‌ها اولویت اول مطالعه‌ی توست: هر روز ۳۰ تا ۴۵ دقیقه، از مثال‌ها و تمرین‌های پایه شروع کن و پرسش‌هایت را در کلاس یا بعد از کلاس از دبیر بپرس.' : 'پیشنهاد: تقویت فردی از مباحث پایه، تماس با ولی و پیگیری هفتگی با دبیر.']);
@@ -4486,7 +4424,7 @@ function anTips(s, cm, me) {                       // توصیه‌های خود
 }
 const anTip = L => `<ul class="ani">${L.map(([sv, t, tip]) => `<li class="${sv}">${t ? `<span>${esc(t)}</span>` : ''}${tip ? `<small>${esc(tip)}</small>` : ''}</li>`).join('')}</ul>`;
 function anCard(c, cAvg, showT, noTip) {
-  const dg = anDiag(c, cAvg), sv = dg.reduce((m, x) => Math.max(m, SEV[x.sev]), 0), cl = ['ok', 'info', 'warn', 'bad'][sv], n = c.n || 1, bn = ['b0', 'b1', 'b2', 'b3', 'b4'], bl = ['زیر ۱۰', '۱۰ تا ۱۲', '۱۲ تا ۱۴', '۱۴ تا ۱۷', '۱۷ و بالاتر'];
+  const dg = anDiag(c, cAvg), sv = dg.reduce((m, x) => Math.max(m, SEV[x.sev]), 0), cl = ['ok', 'info', 'warn', 'bad'][sv], bn = ['b0', 'b1', 'b2', 'b3', 'b4'], bl = ['زیر ۱۰', '۱۰ تا ۱۲', '۱۲ تا ۱۴', '۱۴ تا ۱۷', '۱۷ و بالاتر'];
   return `<div class="anc ${cl}"><div class="anh"><b>${esc(c.course)}</b><span class="muted small">کلاس ${esc(c.cls)}${showT && c.teacher ? ' · ' + esc(c.teacher) : ''}</span><span class="grow"></span><span class="anp ${anC(c.avg)}">میانگین ${nf(c.avg)} · ${anL(c.avg)}</span></div>
     <div class="andist" aria-label="توزیع نمره‌ها">${c.bk.map((k, i) => k ? `<i class="${bn[i]}" style="flex:${k}" title="${bl[i]}: ${nf(k)} نفر">${nf(k)}</i>` : '').join('')}</div>
     <div class="anleg">${bl.map((t, i) => `<span><i class="${bn[i]}"></i>${t}</span>`).join('')}<span class="grow"></span><span>${nf(c.n)} دانش‌آموز</span></div>
@@ -4588,7 +4526,7 @@ async function mAna(el) {
       $('#anC').onchange = e => { fc = e.target.value; paint(); }; $('#anR').onchange = e => { fcr = e.target.value; paint(); };
       $('#anX').onclick = () => csvExport('تحلیل درس‌ها', ['کلاس', 'درس', 'دبیر', 'تعداد', 'میانگین', 'زیر ۱۰', 'انحراف معیار'], l.map(c => [c.cls, c.course, c.teacher, c.n, c.avg, c.fail, c.sd]));
     } else if (mgr) {                                   // نمای کلی مدیر
-      const clsL = uniq(D.cc.map(c => c.cls)).sort(byFa), crs = uniq(D.cc.map(c => c.course)).sort(byFa), probs = [];
+      const clsL = uniq(D.cc.map(c => c.cls)).sort(byFa);
       const good = D.cc.filter(c => c.n >= 4 && c.avg >= 15).sort((a, b) => b.avg - a.avg).slice(0, 5);
       B.innerHTML = `<h3>میانگین دروس هر کلاس</h3><p class="muted small">درس‌ها از بالاترین میانگین به پایین‌ترین آمده‌اند؛ ستون آخر (آبی تیره) میانگین کل دروس کلاس است. رنگ‌ها: سبز ≥ ۱۵، آبی ۱۲ تا ۱۵، نارنجی ۱۰ تا ۱۲، قرمز زیر ۱۰.</p>${clsL.map(k => anColChart(k, D.cc.filter(c => c.cls === k), D.students)).join('')}<h3 style="margin-top:14px">پراکندگی نمرات در هر درس</h3><p class="muted small">طول هر نوار تعداد دانش‌آموزان آن درس است؛ درس‌های بهتر بالاترند.</p>${clsL.map(k => anSpread(k, D.cc.filter(c => c.cls === k))).join('')}
         <h3 style="margin-top:14px">مهم‌ترین مشکل‌ها و پیشنهاد برای دبیران</h3><p class="muted small">درس‌هایی که مشکل مشابه دارند کنار هم آمده‌اند و پیشنهاد فقط یک‌بار نوشته شده است.</p>${anGroups(D.cc, true) || '<div class="empty">مشکل جدی دیده نشد.</div>'}
@@ -4682,15 +4620,6 @@ function anaHtml(list) {
     <p class="muted small">سطح بر اساس میانگین درصد: عالی ≥ ۷۰، خوب ≥ ۵۰، متوسط ≥ ۳۰، کمتر از آن نیازمند تلاش. درصد منفی صفر حساب می‌شود.</p>`;
 }
 /* ===== لوح افتخار و تقدیرنامه ===== */
-function honorSheet(x, label, thr) {
-  return `<section class="pg" style="text-align:center;border:6px double #b8860b;padding:40px 30px;min-height:90vh;display:flex;flex-direction:column;justify-content:center;gap:18px">
-    <img src="${BR.logo || ICON}" alt="" style="width:110px;height:110px;margin:0 auto;object-fit:contain"><div style="font-size:22px">${esc(S.school)}</div>
-    <div style="font-size:44px;font-weight:700;color:#8a6d00">تقدیرنامه</div>
-    <div style="font-size:20px">به پاس تلاش و موفقیت درخشان</div><div style="font-size:34px;font-weight:700">${esc(x.name)}</div>
-    <div style="font-size:20px">دانش‌آموز کلاس ${esc(x.cls)} · رتبه‌ی ${nf(x.r)} کلاس با میانگین ${nf(x.avg)}</div>
-    <div style="font-size:16px;color:#555">${esc(label)} · سال تحصیلی ${esc(ayLabel(M && M.settings))} · تاریخ: ${esc(todayJ())}</div>
-    <div class="sign" style="display:flex;justify-content:space-around;margin-top:40px"><div>معاون آموزشی</div><div>مهر و امضای مدیر</div></div></section>`;
-}
 /* ===== کارنامه‌ی رسمی (همه‌ی نوبت‌ها در یک برگه) ===== */
 async function mInsReview(el) {
   const role = S.user && S.user.role, can = jIsMgr(), seeFile = role === 'manager' || role === 'counselor';
@@ -5559,6 +5488,14 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.72', d:'۱۴۰۵/۰۹/۰۴', items:[
+    'افکت‌های سنگین ظاهری (محو‌کردن پس‌زمینه‌ی کارت‌ها و سربرگ، درخشش پشت آیکن ماژول‌ها و سایه‌ی فیلتری آیکن‌ها) حذف شد تا برنامه روان‌تر باشد.',
+    'پس‌زمینه‌ی کارت‌ها و سربرگ کمی غیرشفاف‌تر شد تا خوانایی حفظ شود.',
+  ] },
+  { v:'v5.71', d:'۱۴۰۵/۰۹/۰۳', items:[
+    'پاکسازی و سبک‌سازی برنامه: کدها، داده‌ها و دستورهای بلااستفاده (توابع و مسیرهای سرور که هیچ‌جا فراخوانی نمی‌شدند، متغیرها و استایل‌های بی‌مصرف و بخش‌های قدیمیِ جایگزین‌شده) کامل حذف شد.',
+    'عملکرد ماژول‌ها و اطلاعات ثبت‌شده بدون هیچ تغییری باقی ماند.',
+  ] },
   { v:'v5.70', d:'۱۴۰۵/۰۹/۰۱', items:[
     'سربرگ: منوی سه‌نقطه اضافه شد. به ترتیب: نام کاربر، تم تاریک، تغییر رمز، تنظیمات، ویرایش صفحه اصلی، دانلود نسخه آفلاین، مدیریت پیوندها، تغییرات برنامه و خروج (برای مدیر؛ سایر نقش‌ها فقط موارد مربوط به خودشان).',
     'آیکن تم و دکمه‌ی خروج و نام کاربر از سربرگ برداشته شد و داخل منوی سه‌نقطه قرار گرفت.',
@@ -5576,15 +5513,6 @@ const CHANGELOG = [
     'ماژول حضور و غیاب دانش‌آموزان ← زبانه‌ی جدید «وضعیت حضور و غیاب»: جدول برنامه‌ی روز، با رنگ سبز برای زنگ‌هایی که حضور و غیابشان انجام شده و قرمز برای زنگ‌هایی که ساعتشان گذشته و ثبت نشده است.',
     '«برنامه روز جاری» به «نمایش برنامه» تغییر نام یافت و برنامه‌ی روزِ تاریخ انتخاب‌شده را (با توجه به هفته‌ی زوج/فرد) نشان می‌دهد.',
     'تقویم انتخاب تاریخ دقیقاً کنار فیلد تاریخ باز می‌شود (پیش‌تر در بعضی صفحه‌ها دور از فیلد ظاهر می‌شد).',
-  ] },
-  { v:'v5.67', d:'۱۴۰۵/۰۸/۳۰', items:[
-    'آزمون‌های آزمایشی ← ورود نتایج: دکمه‌ی «ویرایش دروس آزمون» اضافه شد؛ مدیر می‌تواند برای هر آزمون و هر رشته درس اضافه یا حذف کند و نام و ضریب درس‌ها را تغییر دهد. نتایج، رتبه‌ها و نتایج تجمیعی بر پایه‌ی همین دروس محاسبه می‌شود.',
-    'با تغییر نام یک درس، نمره‌های ثبت‌شده‌ی آن حفظ می‌شود؛ حذف درس نمره‌های آن را پاک می‌کند. «بازگشت به دروس پیش‌فرض» فهرست اصلی رشته را برمی‌گرداند.',
-  ] },
-  { v:'v5.66', d:'۱۴۰۵/۰۸/۳۰', items:[
-    'سربرگ هنگام اسکرول به پایین صفحه ثابت می‌ماند و همیشه در دسترس است.',
-    'آیکون «صفحه‌ی اصلی» از داخل ماژول‌ها به سربرگ منتقل شد؛ فقط وقتی ماژولی باز است نمایش داده می‌شود و عنوان ماژول در بالای محتوا می‌ماند.',
-    'چیدمان سربرگ در موبایل اصلاح شد: نام مدرسه در یک ردیف و آیکون‌ها در ردیف جداگانه قرار می‌گیرند و دیگر نام مدرسه روی آیکون‌ها نمی‌افتد.',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5876,7 +5804,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.70';
+const VERSION = 'v5.72';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
@@ -8144,7 +8072,6 @@ const PUNISH = ['تذکر شفاهی', 'تذکر کتبی', 'تعهد کتبی',
 const PUNISH_OLD = { 'تذکر شفاهی به صورت خصوصی':'تذکر شفاهی', 'تماس با والدین و تعهد کتبی دانش‌آموز':'تماس با والدین', 'احضار والدین و تعهد کتبی دانش‌آموز':'تعهد از والدین', 'اخراج از مدرسه به مدت سه روز':'محرومیت سه‌روزه', 'انتقال به مدرسه‌ی دیگر':'انتقال به مدرسه‌ی دیگر' };
 const DSC_BASE = 20;
 const DSC_TYPE_DEF = { 'پوشش نامناسب':0.5, 'بی‌احترامی به دبیر':2, 'بی‌احترامی به مدیر':3, 'تأخیر در حضور':0.25, 'شروع‌کننده‌ی درگیری':3, 'مشارکت در درگیری':2, 'درگیری':2, 'عدم شرکت در آزمون':1, 'همراه داشتن گوشی':1, 'سایر':0.5 };
-const DSC_PUN_DEF = { 'تذکر شفاهی':0.25, 'تذکر کتبی':0.5, 'تعهد کتبی':1, 'تماس با والدین':1, 'تعهد از والدین':1.5, 'محرومیت سه‌روزه':3, 'انتقال به مدرسه‌ی دیگر':5 };
 const DAP_MAX_PEND = 3;
 function dscCols_() {                                // ستون‌های تازه‌ی برگه‌ی انضباط (یک بار)
   if (MEMO.dscCols) return; MEMO.dscCols = 1;
@@ -8217,11 +8144,6 @@ function dscSum_(code) {                              // مجموع نمره‌�
   return Math.round(n * 100) / 100;
 }
 function dscScore_(code) { return Math.max(0, Math.round((DSC_BASE - dscSum_(code)) * 100) / 100); }
-function dscScores_() {                               // نقشه‌ی نمره‌ی انضباط همه (برای گزارش مدیر)
-  const m = {}; rows_('dsc').forEach(r => { if (str_(r[0]) && str_(r[10]) !== 'بی‌اثر') { const c = code_(r[2]); m[c] = (m[c] || 0) + (Number(r[6]) || 0); } });
-  const ea = examAbsAll_(), k = dscExamCfg_(); Object.keys(ea).forEach(c => { m[c] = (m[c] || 0) + ea[c].length * k; });
-  return m;
-}
 function dapRow_(r) { return { id:str_(r[0]), code:code_(r[1]), name:str_(r[2]), cls:str_(r[3]), did:str_(r[4]), text:str_(r[5]), status:str_(r[6]) || 'در انتظار', reply:str_(r[7]), t:str_(r[8]), rt:str_(r[9]) }; }
 function dscList_(u, p) {
   const c = norm_(p && p.cls), code = code_(p && p.code);
@@ -8313,7 +8235,7 @@ function dscVoid_(u, p) {                         // بی‌اثر کردن / ب
 function dscCfgSave_(u, p) {
   if (u.role !== 'manager') return err_('دسترسی ندارید.');
   const chk = (src, keys) => { const o = {}; for (let i = 0; i < keys.length; i++) { const k = keys[i], v = num_(src && src[k]); if (v == null || v < 0 || v > DSC_BASE) return null; o[k] = v; } return o; };
-  const t = chk(p.types, Object.keys(DSC_TYPE_DEF)), n = true;
+  const t = chk(p.types, Object.keys(DSC_TYPE_DEF));
   if (!t) return err_('نمره‌ی هر مورد باید عددی بین ۰ و ' + DSC_BASE + ' باشد.');
   const kv = { dscCfg:JSON.stringify({ types:t }) };
   const ex = dscExtra_(); Object.keys(ex).forEach(k => { const v = num_(p.types && p.types[k]); if (v != null && v >= 0 && v <= DSC_BASE) ex[k] = v; });
@@ -8604,13 +8526,6 @@ function rptAtt_(u, p) {
     .map(x => ({ date:str_(x[0]), cls:str_(x[1]), course:str_(x[2]), code:code_(x[3]), name:str_(x[4]), note:str_(x[5]) }));
   return { status:'ok', from:r.from, to:r.to, ses, att, notes };
 }
-function rptGr_(u, p) {
-  const cs = classSet_(p), course = norm_(p.course), code = code_(p.code);
-  if (!cs && !course && !code) return err_('دست‌کم یکی از فیلترهای پایه، کلاس، درس یا دانش‌آموز را انتخاب کنید.');
-  const list = rows_('gr').filter(x => grVal_(x) != null && (!cs || cs[norm_(x[0])]) && (!course || norm_(x[1]) === course) && (!code || code_(x[5]) === code))
-    .map(x => ({ cls:str_(x[0]), course:str_(x[1]), title:str_(x[2]), date:str_(x[3]), max:Number(x[4]), code:code_(x[5]), name:str_(x[6]), score:grVal_(x), abs:grAbs_(x), teacher:code_(x[8]), note:str_(x[10]) }));
-  return { status:'ok', list };
-}
 // کارنامه‌ی کلاسی: نمره، غیبت و جلسه‌های همه‌ی دانش‌آموزان یک کلاس، برای محاسبه‌ی معدل و رتبه
 /* =====================================================================
    تحلیل آزمون‌ها: نمرات درسی کلاسی + آزمون‌های موسسه (مدیر: همه، دبیر: کلاس و درس‌های خودش، دانش‌آموز: خودش)
@@ -8716,7 +8631,7 @@ function stuCard_(u, p) {
    گزارش فعالیت دبیران و دانش‌آموزان (فقط ۱۰۰ مورد اخیر هر گروه نگه‌داری می‌شود) و ثبت تأخیر/تعجیل/مرخصی کارکنان
    ===================================================================== */
 const ALG_KEEP = { teacher:50, student:50, manager:50 };   // ۵۰ رویداد اخیر برای هر گروه
-const ACT_FA = { attSave:'ثبت حضور و غیاب', grSave:'ثبت نمرات', gpcDecide:'تأیید یا رد تغییر نمره', grDel:'حذف نمرات', exmAdd:'ثبت آزمون کلاسی', facAdd:'ثبت فعالیت کلاسی', facEdit:'ویرایش فعالیت کلاسی', stfEdit:'ویرایش مورد کارکنان', facDel:'حذف فعالیت کلاسی', exmDel:'حذف آزمون کلاسی', myPass:'تغییر رمز', csiSave:'تکمیل اطلاعات مشاوره', insSave:'ثبت نتیجه‌ی آزمون موسسه', insDel:'حذف نتیجه‌ی آزمون موسسه', lrqSave:'درخواست مرخصی دانش‌آموز', lrqReview:'بررسی مرخصی دانش‌آموز', ptaSave:'ثبت جلسه‌ی انجمن اولیا و مربیان', ptaMark:'ثبت شرکت والدین در جلسه', pvrSave:'درخواست مراجعه‌ی اولیا', pvrReview:'پاسخ به درخواست مراجعه', smsToday:'ارسال پیامک غیبت', smsCfgSave:'تنظیمات پیامک', exmDecide:'بررسی آزمون ناهمخوان', feeAdd:'ثبت واریز شهریه', feeStuSave:'نوع شهریه و تخفیف دانش‌آموز', linkSave:'ذخیره‌ی پیوندها', stuStatus:'تغییر وضعیت دانش‌آموز', stfDaySave:'حضور و غیاب روزانه‌ی دبیران', feeDel:'حذف واریز شهریه', feeEdit:'ویرایش واریز شهریه', feeReview:'بررسی واریز شهریه', feeCfgSave:'تغییر مبالغ شهریه', classAdd:'افزودن کلاس', classEdit:'ویرایش کلاس', classDel:'حذف کلاس', userAdd:'افزودن کاربر', userEdit:'ویرایش کاربر', userDel:'حذف کاربر', userReset:'بازنشانی رمز', userResetAll:'بازنشانی رمز همه', dscAdd:'ثبت مورد انضباطی', dscVoid:'بی‌اثر/مؤثر کردن مورد انضباطی', dscCfgSave:'تنظیم نمره‌های منفی انضباط', dscRescale:'تبدیل نمره‌های منفی قدیمی', dapSave:'درخواست حذف نمره‌ی منفی', dapReview:'پاسخ به درخواست حذف نمره‌ی منفی', pvrAdd:'ثبت مراجعه‌ی والدین به مدرسه', dscEdit:'ویرایش مورد انضباطی', dscDel:'حذف مورد انضباطی', absSet:'تعیین وضعیت غیبت', absPenaltySave:'تغییر نمره‌ی غیبت غیرموجه', orgSave:'ذخیره‌ی چارت مدرسه', brandSave:'تغییر هویت برنامه', jexSave:'ثبت آزمون آزمایشی', jsubSave:'ویرایش دروس آزمون آزمایشی', jexDel:'حذف آزمون آزمایشی', jpcSave:'ثبت نتایج آزمایشی', insReview:'بررسی نتیجه‌ی موسسه', exmAddM:'ثبت آزمون آزمایشی/امتحان ترم در تقویم', stfAdd:'ثبت تأخیر/تعجیل/مرخصی/غیبت کارکنان', stfDel:'حذف مورد کارکنان', schSave:'ذخیره‌ی برنامه‌ی هفتگی', coefSave:'ذخیره‌ی ضرایب', setSave:'ذخیره‌ی تنظیمات', rollRun:'ارتقای سال تحصیلی', phoSave:'ثبت عکس پروفایل', phoDel:'حذف عکس پروفایل', bannerSave:'ثبت بنر مناسبتی'};
+const ACT_FA = { attSave:'ثبت حضور و غیاب', grSave:'ثبت نمرات', gpcDecide:'تأیید یا رد تغییر نمره', grDel:'حذف نمرات', exmAdd:'ثبت آزمون کلاسی', facAdd:'ثبت فعالیت کلاسی', facEdit:'ویرایش فعالیت کلاسی', facDel:'حذف فعالیت کلاسی', exmDel:'حذف آزمون کلاسی', myPass:'تغییر رمز', csiSave:'تکمیل اطلاعات مشاوره', insSave:'ثبت نتیجه‌ی آزمون موسسه', insDel:'حذف نتیجه‌ی آزمون موسسه', lrqSave:'درخواست مرخصی دانش‌آموز', lrqReview:'بررسی مرخصی دانش‌آموز', ptaSave:'ثبت جلسه‌ی انجمن اولیا و مربیان', ptaMark:'ثبت شرکت والدین در جلسه', pvrSave:'درخواست مراجعه‌ی اولیا', pvrReview:'پاسخ به درخواست مراجعه', smsToday:'ارسال پیامک غیبت', smsCfgSave:'تنظیمات پیامک', exmDecide:'بررسی آزمون ناهمخوان', feeAdd:'ثبت واریز شهریه', feeStuSave:'نوع شهریه و تخفیف دانش‌آموز', linkSave:'ذخیره‌ی پیوندها', stuStatus:'تغییر وضعیت دانش‌آموز', stfDaySave:'حضور و غیاب روزانه‌ی دبیران', feeDel:'حذف واریز شهریه', feeEdit:'ویرایش واریز شهریه', feeReview:'بررسی واریز شهریه', feeCfgSave:'تغییر مبالغ شهریه', classAdd:'افزودن کلاس', classEdit:'ویرایش کلاس', classDel:'حذف کلاس', userAdd:'افزودن کاربر', userEdit:'ویرایش کاربر', userDel:'حذف کاربر', userReset:'بازنشانی رمز', userResetAll:'بازنشانی رمز همه', dscAdd:'ثبت مورد انضباطی', dscVoid:'بی‌اثر/مؤثر کردن مورد انضباطی', dscCfgSave:'تنظیم نمره‌های منفی انضباط', dscRescale:'تبدیل نمره‌های منفی قدیمی', dapSave:'درخواست حذف نمره‌ی منفی', dapReview:'پاسخ به درخواست حذف نمره‌ی منفی', pvrAdd:'ثبت مراجعه‌ی والدین به مدرسه', dscEdit:'ویرایش مورد انضباطی', dscDel:'حذف مورد انضباطی', absSet:'تعیین وضعیت غیبت', absPenaltySave:'تغییر نمره‌ی غیبت غیرموجه', orgSave:'ذخیره‌ی چارت مدرسه', brandSave:'تغییر هویت برنامه', jexSave:'ثبت آزمون آزمایشی', jsubSave:'ویرایش دروس آزمون آزمایشی', jexDel:'حذف آزمون آزمایشی', jpcSave:'ثبت نتایج آزمایشی', insReview:'بررسی نتیجه‌ی موسسه', exmAddM:'ثبت آزمون آزمایشی/امتحان ترم در تقویم', stfDel:'حذف مورد کارکنان', schSave:'ذخیره‌ی برنامه‌ی هفتگی', coefSave:'ذخیره‌ی ضرایب', setSave:'ذخیره‌ی تنظیمات', rollRun:'ارتقای سال تحصیلی', phoSave:'ثبت عکس پروفایل', phoDel:'حذف عکس پروفایل', bannerSave:'ثبت بنر مناسبتی'};
 function log_(u, type, desc) {
   try {
     if (!u || ['teacher', 'student', 'manager'].indexOf(u.role) < 0) return;
@@ -8831,47 +8746,6 @@ function stfDaySave_(u, p) {
   if (add.length) append_('stf', add);
   else append_('stf', [[Utilities.getUuid().replace(/-/g, '').slice(0, 10), date, 'o:none', '—', '—', 'حاضر', '', '', '', '', now, '', '1']]);   // نشانه‌ی «این روز ثبت شد»
   return Object.assign(stfDay_(u, { date }), { message:add.length ? 'حضور و غیاب دبیران ذخیره شد.' : 'همه حاضر ثبت شد.' });
-}
-function stfParse_(p) {                           // اعتبارسنجی مشترک ثبت و ویرایش
-  const date = normDate_(p.date), kind = str_(p.kind), st = stfStaff_().find(x => x.key === str_(p.key));
-  if (!st) return { err:'فرد را از فهرست کارکنان انتخاب کنید. (نام‌ها از چارت مدرسه و دبیران می‌آید.)' };
-  if (STF_KINDS.indexOf(kind) < 0) return { err:'نوع را انتخاب کنید.' };
-  if (!dateFmtOk_(date)) return { err:'تاریخ نامعتبر است.' };
-  let minutes = 0, days = 0, leave = '';
-  if (kind === 'مرخصی') {
-    leave = str_(p.leave);
-    if (STF_LEAVES.indexOf(leave) < 0) return { err:'نوع مرخصی را انتخاب کنید.' };
-    if (str_(p.unit) === 'hour') {                // مرخصی ساعتی: مدت به دقیقه ذخیره می‌شود و تعداد روز خالی می‌ماند
-      const h = num_(p.hours);
-      if (h == null || h <= 0 || h > 24) return { err:'مدت مرخصی ساعتی را به ساعت وارد کنید (مثلاً ۲ یا ۱٫۵).' };
-      minutes = Math.round(h * 60);
-    } else {
-      days = num_(p.days);
-      if (days == null || days <= 0 || days > 365) return { err:'تعداد روز مرخصی را وارد کنید (مثلاً ۱ یا ۰٫۵).' };
-    }
-  } else if (kind === 'غیبت') {
-    days = num_(p.days);
-    if (days == null || days <= 0 || days > 365) return { err:'تعداد روز غیبت را وارد کنید (مثلاً ۱ یا ۰٫۵).' };
-  } else {
-    minutes = num_(p.minutes);
-    if (minutes == null || minutes <= 0 || minutes > 600 || Math.floor(minutes) !== minutes) return { err:'مدت را به دقیقه (عدد صحیح) وارد کنید.' };
-  }
-  return { st, date, kind, minutes, days, leave, note:clean_(p.note, 200) };
-}
-function stfAdd_(u, p) {
-  const v = stfParse_(p);
-  if (v.err) return err_(v.err);
-  append_('stf', [[Utilities.getUuid().replace(/-/g, '').slice(0, 10), v.date, v.st.key, v.st.name, v.st.post, v.kind, v.minutes || '', v.days || '', v.leave, v.note, stamp_()]]);
-  return stfData_({ message:'«' + v.kind + '» برای ' + v.st.name + ' ثبت شد.' });
-}
-function stfEdit_(u, p) {
-  const id = str_(p.id), old = rows_('stf').find(r => str_(r[0]) === id);
-  if (!old) return err_('مورد پیدا نشد (ممکن است حذف شده باشد).');
-  const v = stfParse_(p);
-  if (v.err) return err_(v.err);
-  deleteWhere_('stf', r => str_(r[0]) === id);
-  append_('stf', [[id, v.date, v.st.key, v.st.name, v.st.post, v.kind, v.minutes || '', v.days || '', v.leave, v.note, str_(old[10]) || stamp_()]]);
-  return stfData_({ message:'مورد ویرایش شد.' });
 }
 function stfDel_(u, p) {
   const id = str_(p.id);
@@ -9020,10 +8894,10 @@ function bannerSave_(u, p) {
    ===================================================================== */
 const DEP_ACT = (() => {                           // اقدام‌های مجاز هر معاون (حساب معاون = حساب مدیر با دامنه‌ی محدود)
   const L = s => s.split(/\s+/).filter(Boolean);
-  const common = 'me myPass tordSave qsearch', edu = 'liveStatus absList absSet absPenaltySave gradeStatus gpcList gpcDecide galList facList facDel exmList exmDel exmAddM exmDecide jexList jexSave jsubSave jexDel jexLoad jpcSave jamRes jamAgg insList insView insDel insReview rptAtt rptGr stuCard classCard anaData clsRoster';
+  const common = 'me myPass tordSave qsearch', edu = 'liveStatus absList absSet absPenaltySave gradeStatus gpcList gpcDecide galList facList facDel exmList exmDel exmAddM exmDecide jexList jexSave jsubSave jexDel jexLoad jpcSave jamRes jamAgg insList insView insDel insReview rptAtt stuCard classCard anaData clsRoster';
   const info = 'classAdd classEdit classDel userAdd userEdit userDel stuStatus userReset userResetAll clsRoster schSave coefSave setSave';
   const pro = 'dscList dscTypeAdd dscTypeDel dapList dapReview dscVoid dscRescale dscCfgSave dscAdd dscDel dscEdit csiList csiGet cnsList ptaList ptaSave ptaDel ptaRoster ptaAbs ptaMark pvrList pvrReview pvrAdd pvrDel stuCard classCard clsRoster';
-  const exe = 'feeBoard feeAdd feeStuSave feeReview feeCfgSave feeView feeDel feeEdit linkList linkSave smsInfo smsCfgSave smsToday smsTest algList stfList stfDay stfDaySave stfAdd stfEdit stfDel bannerSave phoGet clsRoster';
+  const exe = 'feeBoard feeAdd feeStuSave feeReview feeCfgSave feeView feeDel feeEdit linkList linkSave smsInfo smsCfgSave smsToday smsTest algList stfList stfDay stfDaySave stfDel bannerSave phoGet clsRoster';
   const mk = (...g) => { const o = {}; g.forEach(s => L(s).forEach(k => o[k] = 1)); return o; };
   return { dedu:mk(common, edu, info), dpro:mk(common, pro), dexe:mk(common, exe) };
 })();
@@ -9048,10 +8922,10 @@ function actions_() {
       userAdd:{ fn:userAdd_, w:1 }, userEdit:{ fn:userEdit_, w:1 }, userDel:{ fn:userDel_, w:1 }, stuStatus:{ fn:stuStatus_, w:1 }, clsRoster:{ fn:clsRoster_ },
       userReset:{ fn:userReset_, w:1 }, userResetAll:{ fn:userResetAll_, w:1 }, userPasses:{ fn:userPasses_ },
       dscList:{ fn:dscList_ }, dscTypeAdd:{ fn:dscTypeAdd_, w:1 }, dscTypeDel:{ fn:dscTypeDel_, w:1 }, dapList:{ fn:dapList_ }, dapReview:{ fn:dapReview_, w:1 }, dscVoid:{ fn:dscVoid_, w:1 }, dscRescale:{ fn:dscRescale_, w:1 }, dscCfgSave:{ fn:dscCfgSave_, w:1 }, dscAdd:{ fn:dscAdd_, w:1 }, dscDel:{ fn:dscDel_, w:1 }, dscEdit:{ fn:dscEdit_, w:1 }, impStart:{ fn:impStart_ }, absList:{ fn:absList_ }, absSet:{ fn:absSet_, w:1 }, absPenaltySave:{ fn:absPenaltySave_, w:1 }, gradeStatus:{ fn:gradeStatus_ }, gpcList:{ fn:gpcList_ }, galList:{ fn:galList_ }, facList:{ fn:facList_ }, facDel:{ fn:facDel_, w:1 }, gpcDecide:{ fn:gpcDecide_, w:1 }, orgSave:{ fn:orgSave_, w:1 }, liveStatus:{ fn:liveStatus_ }, exmList:{ fn:exmList_ }, exmDel:{ fn:exmDel_, w:1 }, exmAddM:{ fn:exmAddM_, w:1 }, 
-      jexList:{ fn:jexList_ }, jexSave:{ fn:jexSave_, w:1 }, jsubSave:{ fn:jsubSave_, w:1 }, jexDel:{ fn:jexDel_, w:1 }, jexLoad:{ fn:jexLoad_ }, jpcSave:{ fn:jpcSave_, w:1 }, brandSave:{ fn:brandSave_, w:1 }, tordSave:{ fn:tordSave_, w:1 }, csiList:{ fn:csiList_ }, csiGet:{ fn:csiGet_ }, cnsList:{ fn:cnsList_ }, jamRes:{ fn:jamRes_ }, jamAgg:{ fn:jamAgg_ }, insList:{ fn:insList_ }, insView:{ fn:insView_ }, insDel:{ fn:insDel_, w:1 }, insReview:{ fn:insReview_, w:1 }, ptaList:{ fn:ptaList_ }, ptaSave:{ fn:ptaSave_, w:1 }, ptaDel:{ fn:ptaDel_, w:1 }, ptaRoster:{ fn:ptaRoster_ }, ptaAbs:{ fn:ptaAbs_ }, homeSave:{ fn:homeSave_, w:1 }, ptaMark:{ fn:ptaMark_, w:1 }, pvrList:{ fn:pvrList_ }, pvrReview:{ fn:pvrReview_, w:1 }, pvrAdd:{ fn:pvrAdd_, w:1 }, pvrDel:{ fn:pvrDel_, w:1 }, smsInfo:{ fn:smsInfo_ }, smsCfgSave:{ fn:smsCfgSave_, w:1 }, smsToday:{ fn:smsToday_, w:1 }, smsTest:{ fn:smsTest_, w:1 }, exmDecide:{ fn:exmDecide_, w:1 }, qsearch:{ fn:qsearch_ }, feeBoard:{ fn:feeBoard_ }, feeAdd:{ fn:feeAdd_, w:1 }, linkList:{ fn:linkList_ }, linkSave:{ fn:linkSave_, w:1 }, feeStuSave:{ fn:feeStuSave_, w:1 }, feeReview:{ fn:feeReview_, w:1 }, feeCfgSave:{ fn:feeCfgSave_, w:1 }, feeView:{ fn:feeView_ }, feeDel:{ fn:feeDel_, w:1 }, feeEdit:{ fn:feeEdit_, w:1 }, algList:{ fn:algList_ }, stfList:{ fn:stfList_ }, stfDay:{ fn:stfDay_ }, stfDaySave:{ fn:stfDaySave_, w:1 }, stfAdd:{ fn:stfAdd_, w:1 }, stfEdit:{ fn:stfEdit_, w:1 }, stfDel:{ fn:stfDel_, w:1 },
+      jexList:{ fn:jexList_ }, jexSave:{ fn:jexSave_, w:1 }, jsubSave:{ fn:jsubSave_, w:1 }, jexDel:{ fn:jexDel_, w:1 }, jexLoad:{ fn:jexLoad_ }, jpcSave:{ fn:jpcSave_, w:1 }, brandSave:{ fn:brandSave_, w:1 }, tordSave:{ fn:tordSave_, w:1 }, csiList:{ fn:csiList_ }, csiGet:{ fn:csiGet_ }, cnsList:{ fn:cnsList_ }, jamRes:{ fn:jamRes_ }, jamAgg:{ fn:jamAgg_ }, insList:{ fn:insList_ }, insView:{ fn:insView_ }, insDel:{ fn:insDel_, w:1 }, insReview:{ fn:insReview_, w:1 }, ptaList:{ fn:ptaList_ }, ptaSave:{ fn:ptaSave_, w:1 }, ptaDel:{ fn:ptaDel_, w:1 }, ptaRoster:{ fn:ptaRoster_ }, ptaAbs:{ fn:ptaAbs_ }, homeSave:{ fn:homeSave_, w:1 }, ptaMark:{ fn:ptaMark_, w:1 }, pvrList:{ fn:pvrList_ }, pvrReview:{ fn:pvrReview_, w:1 }, pvrAdd:{ fn:pvrAdd_, w:1 }, pvrDel:{ fn:pvrDel_, w:1 }, smsInfo:{ fn:smsInfo_ }, smsCfgSave:{ fn:smsCfgSave_, w:1 }, smsToday:{ fn:smsToday_, w:1 }, smsTest:{ fn:smsTest_, w:1 }, exmDecide:{ fn:exmDecide_, w:1 }, qsearch:{ fn:qsearch_ }, feeBoard:{ fn:feeBoard_ }, feeAdd:{ fn:feeAdd_, w:1 }, linkList:{ fn:linkList_ }, linkSave:{ fn:linkSave_, w:1 }, feeStuSave:{ fn:feeStuSave_, w:1 }, feeReview:{ fn:feeReview_, w:1 }, feeCfgSave:{ fn:feeCfgSave_, w:1 }, feeView:{ fn:feeView_ }, feeDel:{ fn:feeDel_, w:1 }, feeEdit:{ fn:feeEdit_, w:1 }, algList:{ fn:algList_ }, stfList:{ fn:stfList_ }, stfDay:{ fn:stfDay_ }, stfDaySave:{ fn:stfDaySave_, w:1 }, stfDel:{ fn:stfDel_, w:1 },
       phoSave:{ fn:phoSave_, w:1 }, phoDel:{ fn:phoDel_, w:1 }, phoGet:{ fn:phoGetA_ }, bannerSave:{ fn:bannerSave_, w:1 }, volInfo:{ fn:volInfo_ }, offMeta:{ fn:offMeta_ }, offSheet:{ fn:offSheet_ }, offHtml:{ fn:offHtml_ }, rollPreview:{ fn:rollPreview_ }, rollRun:{ fn:rollRun_, w:1 },
       schSave:{ fn:schSave_, w:1 }, coefSave:{ fn:coefSave_, w:1 }, setSave:{ fn:setSave_, w:1 },
-      rptAtt:{ fn:rptAtt_ }, rptGr:{ fn:rptGr_ }, stuCard:{ fn:stuCard_ }, classCard:{ fn:classCard_ }, anaData:{ fn:anaData_ }
+      rptAtt:{ fn:rptAtt_ }, stuCard:{ fn:stuCard_ }, classCard:{ fn:classCard_ }, anaData:{ fn:anaData_ }
     }
   };
 }
