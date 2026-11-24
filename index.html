@@ -1032,7 +1032,7 @@ async function brandSync(r) {
   if (ch) { store.set('brand', BR); applyBrand(); if ($('#splash')) viewSplash(); }
 }
 applyBrand();
-const BUILD = 'v5.72';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
+const BUILD = 'v5.73';                           // با هر تغییر بزرگ عوض می‌شود تا معلوم باشد کدام فایل اجرا می‌شود
 function viewSplash() {
   document.body.classList.remove('nav', 'side'); document.body.classList.add('splash');
   app.innerHTML = `<div class="sp" id="splash"><div class="spi">
@@ -2620,7 +2620,7 @@ function mGroup(el, key, subs) {           // زبانه‌ی اصلی با چن
   $('.sg', el).replaceWith(seg2(subs.map(s => [s[0], s[1]]), MSUB[key], show));
   show(MSUB[key]);
 }
-const mAttGrp = el => { MSUB.att = 'lv'; mGroup(el, 'att', [['lv', 'وضعیت حضور و غیاب', mAttLive], ['abs', 'بررسی غیبت‌ها', mAbsence], ['rng', 'گزارش', rAttRange]]); };
+const mAttGrp = el => { MSUB.att = 'lv'; mGroup(el, 'att', [['lv', 'وضعیت حضور و غیاب', mAttLive], ['abs', 'بررسی غیبت و تأخیر', mAbsence], ['rng', 'گزارش', rAttRange]]); };
 const mDiscGrp = el => mGroup(el, 'dsc', [['add', 'ثبت و سوابق انضباط', mDisc], ['apl', 'درخواست‌های حذف نمره', mDap], ['drp', 'نمره‌ی انضباط دانش‌آموزان', mDiscRpt], ['cfg', 'تنظیم نمره‌های منفی', mDscCfg]]);
 function mHomeCfg(el) {                          // تنظیمات ← صفحه‌ی اصلی: نام نوارها، رنگ، جای هر ماژول و ترتیب برای هر نقش
   let role = 'manager', cfg = null;
@@ -3548,8 +3548,8 @@ const stExams = (d, el) => exmHub(el, 's', d);
 const AB = { cls:'', date:'', st:'', list:[], penalty:10 };
 async function mAbsence(el) {
   if (!AB.date) AB.date = todayJ();
-  el.innerHTML = `<h2>بررسی غیبت‌ها</h2>
-    <p class="muted small">غیبت‌های ثبت‌شده‌ی دبیران در بازه‌ی انتخاب‌شده (امروز یا هر روز و بازه‌ی گذشته، تا ۱۵۰ روز) را «موجه» یا «غیرموجه» کنید. غیبت غیرموجه خودکار به‌عنوان مورد انضباطی با نمره‌ی منفی ثبت می‌شود و در رتبه‌ی مدرسه اثر می‌گذارد.</p>
+  el.innerHTML = `<h2>بررسی غیبت و تأخیر</h2>
+    <p class="muted small">غیبت‌ها و تأخیرهای ثبت‌شده‌ی دبیران در بازه‌ی انتخاب‌شده (امروز یا هر روز و بازه‌ی گذشته، تا ۱۵۰ روز) را «موجه» یا «غیرموجه» کنید. غیبت یا تأخیر غیرموجه خودکار به‌عنوان مورد انضباطی با نمره‌ی منفی ثبت می‌شود (تأخیر با نمره‌ی «تأخیر در حضور») و در رتبه‌ی مدرسه اثر می‌گذارد.</p>
     <div class="filters"><label class="f">کلاس<select id="aC">${classOpts(AB.cls, 'همه‌ی کلاس‌ها')}</select></label>
       <label class="f">بازه<select id="aM">${[['day', 'یک روز (امروز یا هر تاریخ گذشته)'], ['w', '۷ روز اخیر'], ['m', '۳۰ روز اخیر'], ['r', 'از تاریخ تا تاریخ']].map(o => `<option value="${o[0]}" ${(AB.mode || 'day') === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></label>
       <div class="f" id="aDw"><span>تاریخ</span><div id="aD"></div></div><div class="f" id="aFw"><span>از تاریخ</span><div id="aF"></div></div><div class="f" id="aTw"><span>تا تاریخ</span><div id="aT"></div></div>
@@ -3559,9 +3559,9 @@ async function mAbsence(el) {
   const draw = () => {
     const l = AB.list.filter(x => !AB.st || (AB.st === 'none' ? !x.decision : x.decision === AB.st));
     const cnt = k => AB.list.filter(x => k === 'none' ? !x.decision : x.decision === k).length;
-    $('#rOut').innerHTML = AB.list.length ? `${kpis([[nf(AB.list.length), 'کل غیبت‌ها'], [nf(cnt('none')), 'بررسی‌نشده', cnt('none') ? 'bad' : 'ok'], [nf(cnt('موجه')), 'موجه', 'ok'], [nf(cnt('غیرموجه')), 'غیرموجه']])}
-      <div class="scroll" style="margin-top:12px"><table class="tbl stack"><thead><tr><th>تاریخ</th><th>دانش‌آموز</th><th>کلاس</th><th>درس</th><th>دبیر</th><th>وضعیت</th><th></th></tr></thead><tbody>
-      ${l.map(x => { const i = AB.list.indexOf(x); return `<tr><td data-l="تاریخ" class="num">${esc(x.date)}</td><td data-l="دانش‌آموز"><b>${esc(x.name)}</b></td><td data-l="کلاس">${esc(x.cls)}</td><td data-l="درس">${esc(x.course)}</td><td data-l="دبیر">${esc(x.teacherName)}</td>
+    $('#rOut').innerHTML = AB.list.length ? `${kpis([[nf(AB.list.length), 'کل غیبت و تأخیر'], [nf(cnt('none')), 'بررسی‌نشده', cnt('none') ? 'bad' : 'ok'], [nf(cnt('موجه')), 'موجه', 'ok'], [nf(cnt('غیرموجه')), 'غیرموجه']])}
+      <div class="scroll" style="margin-top:12px"><table class="tbl stack"><thead><tr><th>تاریخ</th><th>دانش‌آموز</th><th>کلاس</th><th>درس</th><th>نوع</th><th>دبیر</th><th>وضعیت</th><th></th></tr></thead><tbody>
+      ${l.map(x => { const i = AB.list.indexOf(x); return `<tr><td data-l="تاریخ" class="num">${esc(x.date)}</td><td data-l="دانش‌آموز"><b>${esc(x.name)}</b></td><td data-l="کلاس">${esc(x.cls)}</td><td data-l="درس">${esc(x.course)}</td><td data-l="نوع">${x.status === 'تأخیر' ? 'تأخیر' : 'غیبت'}</td><td data-l="دبیر">${esc(x.teacherName)}</td>
         <td data-l="وضعیت">${x.decision === 'موجه' ? '<span class="pill ok">موجه</span>' : x.decision === 'غیرموجه' ? `<span class="pill bad">غیرموجه · −${nf(x.amount)}</span>` : '<span class="pill">بررسی‌نشده</span>'}${x.reason ? ' <span class="muted small">' + esc(x.reason) + '</span>' : ''}</td>
         <td class="act"><button class="btn sm" data-ab="${i}" data-v="موجه">موجه</button><button class="btn sm danger" data-ab="${i}" data-v="غیرموجه">غیرموجه</button>${x.decision ? `<button class="btn sm" data-ab="${i}" data-v="">برگرداندن</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>`
       : '<div class="empty">در این بازه غیبتی ثبت نشده است.</div>';
@@ -3570,7 +3570,7 @@ async function mAbsence(el) {
   const modeUi = () => { const m = AB.mode || 'day'; $('#aDw').style.display = m === 'day' ? '' : 'none'; $('#aFw').style.display = $('#aTw').style.display = m === 'r' ? '' : 'none'; };
   const load = async () => {
     $('#rOut').innerHTML = loadingHtml;
-    try { const r = await api('absList', q()); AB.list = r.list; AB.penalty = r.penalty; $('#aP').value = r.penalty; draw(); } catch (e) { $('#rOut').innerHTML = `<p class="note warn">${esc(e.message)}</p>`; }
+    try { const r = await api('absList', q()); AB.list = r.list; AB.penalty = r.penalty; AB.latePen = r.latePenalty; $('#aP').value = r.penalty; draw(); } catch (e) { $('#rOut').innerHTML = `<p class="note warn">${esc(e.message)}</p>`; }
   };
   $('#aC').onchange = () => { AB.cls = $('#aC').value; load(); };
   if (!AB.from) AB.from = jAdd(todayJ(), -6); if (!AB.to) AB.to = todayJ();
@@ -3581,7 +3581,7 @@ async function mAbsence(el) {
   $('#aPS').onclick = async e => { try { const r = await api('absPenaltySave', { penalty:$('#aP').value }, e.target); AB.penalty = r.penalty; M.settings = r.settings; toast(r.message); } catch (err) { fail(err); } };
   const send = async (x, v, amount, reason, d) => {
     try {
-      const r = await api('absSet', Object.assign(q(), { date:x.date, course:x.course, code:x.code, decision:v, amount, reason, cls:x.cls }), d || null);
+      const r = await api('absSet', Object.assign(q(), { date:x.date, course:x.course, code:x.code, decision:v, amount, reason, cls:x.cls, status:x.status }), d || null);
       if (d) d.close(); toast(r.message); load();
     } catch (err) { fail(err); }
   };
@@ -3589,8 +3589,8 @@ async function mAbsence(el) {
     const b = e.target.closest('button[data-ab]'); if (!b) return;
     const x = AB.list[+b.dataset.ab], v = b.dataset.v;
     if (v !== 'غیرموجه') return send(x, v, '', '', null);
-    dialog(`<h3>غیبت غیرموجه</h3><p class="muted small">${esc(x.name)} · ${esc(x.course)} · ${esc(x.date)}</p>
-      <form id="abF" class="grid"><label class="f">نمره‌ی منفی<input name="amount" inputmode="decimal" value="${esc(String(x.decision === 'غیرموجه' ? x.amount : AB.penalty))}" required></label>
+    dialog(`<h3>${x.status === 'تأخیر' ? 'تأخیر' : 'غیبت'} غیرموجه</h3><p class="muted small">${esc(x.name)} · ${esc(x.course)} · ${esc(x.date)}</p>
+      <form id="abF" class="grid"><label class="f">نمره‌ی منفی<input name="amount" inputmode="decimal" value="${esc(String(x.decision === 'غیرموجه' ? x.amount : x.status === 'تأخیر' ? AB.latePen : AB.penalty))}" required></label>
       <label class="f full">دلیل / توضیح (اختیاری)<input name="reason" maxlength="200" value="${esc(x.reason)}"></label>
       <div class="full" style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" data-close>انصراف</button><button class="btn danger" id="abGo">ثبت غیرموجه</button></div></form>`, d => {
       $('#abF', d).onsubmit = ev => { ev.preventDefault(); const f = ev.target.elements; send(x, 'غیرموجه', f.amount.value, f.reason.value, d); };
@@ -5488,6 +5488,10 @@ const offCall = body => JSON.stringify(OFF.handle(JSON.parse(body)));
 /* ===== تغییرات نسخه‌های برنامه ===== */
 // با هر تغییر در برنامه: نسخه‌ی جدید (BUILD و VERSION) + یک ردیف تازه در بالای این فهرست؛ فقط ۵ نسخه‌ی اخیر نگه داشته می‌شود (قدیمی‌ترها پاک می‌شوند)
 const CHANGELOG = [
+  { v:'v5.73', d:'۱۴۰۵/۰۹/۰۴', items:[
+    'حضور و غیاب ← «بررسی غیبت و تأخیر»: تأخیرهای ثبت‌شده هم مثل غیبت‌ها فهرست می‌شوند و مدیر می‌تواند هر کدام را «موجه» یا «غیرموجه» کند.',
+    'تأخیر غیرموجه خودکار به‌عنوان مورد انضباطی «تأخیر در حضور» با نمره‌ی منفی ثبت می‌شود (مقدار پیش‌فرض از تنظیمات نمره‌ی انواع مورد انضباطی؛ در همان پنجره قابل تغییر است).',
+  ] },
   { v:'v5.72', d:'۱۴۰۵/۰۹/۰۴', items:[
     'افکت‌های سنگین ظاهری (محو‌کردن پس‌زمینه‌ی کارت‌ها و سربرگ، درخشش پشت آیکن ماژول‌ها و سایه‌ی فیلتری آیکن‌ها) حذف شد تا برنامه روان‌تر باشد.',
     'پس‌زمینه‌ی کارت‌ها و سربرگ کمی غیرشفاف‌تر شد تا خوانایی حفظ شود.',
@@ -5506,13 +5510,6 @@ const CHANGELOG = [
     'در زبانه‌ی «وضعیت حضور و غیاب» برای هر زنگ دکمه‌ی ورود به پنل دبیر هست؛ حضور و غیابِ ثبت‌نشده را ثبت و ثبت‌شده را مشاهده یا ویرایش کنید.',
     'زبانه‌ی «گزارش»: دکمه‌های میان‌بُر «ترم اول»، «ترم دوم» و «کل سال» برای انتخاب بازه (بر اساس نوبت‌های تعریف‌شده در تنظیمات مدرسه).',
     'پرداخت شهریه ← لیست: برای دانش‌آموزان تسویه‌شده دکمه‌ی «چاپ رسید» اضافه شد (پرداخت‌ها، جمع پرداختی، شهریه‌ی نهایی و مانده).',
-  ] },
-  { v:'v5.68', d:'۱۴۰۵/۰۸/۳۰', items:[
-    'آیکون «صفحه‌ی اصلی» همیشه در سربرگ و در سمت راستِ نشان مدرسه قرار دارد (در صفحه‌ی اصلی، با زدن آن صفحه به بالا برمی‌گردد).',
-    'نام ماژول در ماژول‌هایی که دوبار نوشته می‌شد، فقط یک‌بار (در نوار بالای ماژول) نمایش داده می‌شود.',
-    'ماژول حضور و غیاب دانش‌آموزان ← زبانه‌ی جدید «وضعیت حضور و غیاب»: جدول برنامه‌ی روز، با رنگ سبز برای زنگ‌هایی که حضور و غیابشان انجام شده و قرمز برای زنگ‌هایی که ساعتشان گذشته و ثبت نشده است.',
-    '«برنامه روز جاری» به «نمایش برنامه» تغییر نام یافت و برنامه‌ی روزِ تاریخ انتخاب‌شده را (با توجه به هفته‌ی زوج/فرد) نشان می‌دهد.',
-    'تقویم انتخاب تاریخ دقیقاً کنار فیلد تاریخ باز می‌شود (پیش‌تر در بعضی صفحه‌ها دور از فیلد ظاهر می‌شد).',
   ] },
 ];
 const verKeys = () => [].concat.apply([], CHANGELOG.slice(0, 5).map(c => c.items.map((x, i) => c.v + '#' + i)));
@@ -5804,7 +5801,7 @@ const ADMIN_NAME = 'مدیر مدرسه';
 const PERIODS    = 4;              // تعداد پیش‌فرض زنگ‌های هر روز (از «تنظیمات» قابل تغییر)
 const SESSION_DAYS = 30;           // ماندگاری ورود (روز)
 const TZ = 'Asia/Tehran';
-const VERSION = 'v5.72';
+const VERSION = 'v5.73';
 const DAYS   = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه'];
 const WEEKS  = ['همه', 'فرد', 'زوج'];           // «همه» = هر هفته؛ فرد/زوج = تک زنگ (یک هفته در میان)
 const SHIFTS = ['صبح', 'عصر', 'چرخشی - هفته فرد صبح', 'چرخشی - هفته فرد عصر'];
@@ -8442,22 +8439,23 @@ function absList_(u, p) {
   const list = [];
   rows_('att').forEach(x => {
     const d = str_(x[0]);
-    if (str_(x[5]) !== 'غایب' || d < r.from || d > r.to || (c && norm_(x[1]) !== c)) return;
+    if ((str_(x[5]) !== 'غایب' && str_(x[5]) !== 'تأخیر') || d < r.from || d > r.to || (c && norm_(x[1]) !== c)) return;
     const j = dec[absKey_(d, x[1], x[2], x[3])] || null;
     const ok = j && (j.decision === 'موجه' || (j.decision === 'غیرموجه' && dsc[j.dsc]));
-    list.push({ date:d, cls:str_(x[1]), course:str_(x[2]), code:code_(x[3]), name:str_(x[4]), teacherName:tn[code_(x[6])] || code_(x[6]), decision:ok ? j.decision : '', amount:ok ? j.amount : 0, reason:ok ? j.reason : '' });
+    list.push({ status:str_(x[5]), date:d, cls:str_(x[1]), course:str_(x[2]), code:code_(x[3]), name:str_(x[4]), teacherName:tn[code_(x[6])] || code_(x[6]), decision:ok ? j.decision : '', amount:ok ? j.amount : 0, reason:ok ? j.reason : '' });
   });
   list.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : a.cls.localeCompare(b.cls, 'fa'));
-  return { status:'ok', from:r.from, to:r.to, penalty:settings_().absPenalty, list:list.slice(0, 1500) };
+  return { status:'ok', from:r.from, to:r.to, penalty:settings_().absPenalty, latePenalty:dscCfg_().types['تأخیر در حضور'], list:list.slice(0, 1500) };
 }
 function absSet_(u, p) {
   const date = normDate_(p.date), decision = str_(p.decision), reason = clean_(p.reason, 200);
   if (['', 'موجه', 'غیرموجه'].indexOf(decision) < 0) return err_('تصمیم نامعتبر است.');
-  const at = rows_('att').find(x => str_(x[0]) === date && norm_(x[1]) === norm_(p.cls) && norm_(x[2]) === norm_(p.course) && code_(x[3]) === code_(p.code) && str_(x[5]) === 'غایب');
-  if (!at) return err_('این غیبت پیدا نشد.');
+  const late = str_(p.status) === 'تأخیر', stName = late ? 'تأخیر' : 'غیبت';
+  const at = rows_('att').find(x => str_(x[0]) === date && norm_(x[1]) === norm_(p.cls) && norm_(x[2]) === norm_(p.course) && code_(x[3]) === code_(p.code) && str_(x[5]) === (late ? 'تأخیر' : 'غایب'));
+  if (!at) return err_('این ' + stName + ' پیدا نشد.');
   let amount = 0;
   if (decision === 'غیرموجه') {
-    amount = p.amount == null || p.amount === '' ? settings_().absPenalty : num_(p.amount);
+    amount = p.amount == null || p.amount === '' ? (late ? dscCfg_().types['تأخیر در حضور'] : settings_().absPenalty) : num_(p.amount);
     if (amount == null || amount <= 0 || amount > 1000) return err_('نمره‌ی منفی باید عددی مثبت (حداکثر ۱۰۰۰) باشد.');
   }
   const key = absKey_(date, at[1], at[2], at[3]);
@@ -8472,11 +8470,11 @@ function absSet_(u, p) {
     if (decision === 'غیرموجه') {
       did = Utilities.getUuid().replace(/-/g, '').slice(0, 10);
       const s = findUser_('student', at[3]); dscCols_();
-      append_('dsc', [[did, date, code_(at[3]), str_(at[4]), s ? s.cls : str_(at[1]), 'غیبت غیر موجه', amount, clean_('غیبت غیرموجه در درس ' + str_(at[2]) + (reason ? ' — ' + reason : ''), 300), stamp_(), '', ov ? 'بی‌اثر' : '', ov ? str_(ov[11]) : '', ov ? str_(ov[12]) : '', 0]]);
+      append_('dsc', [[did, date, code_(at[3]), str_(at[4]), s ? s.cls : str_(at[1]), late ? 'تأخیر در حضور' : 'غیبت غیر موجه', amount, clean_(stName + ' غیرموجه در درس ' + str_(at[2]) + (reason ? ' — ' + reason : ''), 300), stamp_(), '', ov ? 'بی‌اثر' : '', ov ? str_(ov[11]) : '', ov ? str_(ov[12]) : '', 0]]);
     }
     append_('abj', [[date, str_(at[1]), str_(at[2]), code_(at[3]), str_(at[4]), decision, amount, reason, did, stamp_()]]);
   }
-  return Object.assign(absList_(u, p), { message:decision === 'غیرموجه' ? 'غیبت غیرموجه ثبت شد (منفی ' + amount + ').' : decision === 'موجه' ? 'غیبت موجه ثبت شد.' : 'بررسی غیبت برگردانده شد.' });
+  return Object.assign(absList_(u, p), { message:decision === 'غیرموجه' ? stName + ' غیرموجه ثبت شد (منفی ' + amount + ').' : decision === 'موجه' ? stName + ' موجه ثبت شد.' : 'بررسی ' + stName + ' برگردانده شد.' });
 }
 function absPenaltySave_(u, p) {
   const v = num_(p.penalty);
